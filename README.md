@@ -153,7 +153,16 @@ link to paper : [https://link.springer.com/chapter/10.1007/978-3-319-05458-2_6](
 5. Finally we are going to merge all the above functions of the agents, tools and tasks to run the code and the get the final output.
 
 ## SCREENSHOTS OF THE OUTPUTS
-1. <img src="output.jpg">
+1. <img src="output1.png">
+2. <img src="output2.png">
+3. <img src="output3.png">
+4. <img src="output4.png">
+5. <img src="output5.png">
+6. <img src="output6.png">
+7. <img src="output7.png">
+8. <img src="output8.png">
+9. <img src="output9.png">
+10. <img src="output10.png">
 
 ## SUMMARY
 The project leverages various pre-trained tools and APIs to perform its tasks, without the need for traditional machine learning models like ANN or CNN. The integration of LLMs through LangChain and specific financial analysis tools forms the core of the project's analytical capabilities.
