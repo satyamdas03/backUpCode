@@ -153,7 +153,7 @@ link to paper : [https://link.springer.com/chapter/10.1007/978-3-319-05458-2_6](
 5. Finally we are going to merge all the above functions of the agents, tools and tasks to run the code and the get the final output.
 
 ## SCREENSHOTS OF THE OUTPUTS
-1. <img src="output1.png">
+1. <img src="ouptut1.png">
 2. <img src="output2.png">
 3. <img src="output3.png">
 4. <img src="output4.png">
