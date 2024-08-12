@@ -159,7 +159,7 @@ link to paper : [https://link.springer.com/chapter/10.1007/978-3-319-05458-2_6](
 3. **Serper API Key** : Provides search capabilities for querying search engines. It is used to retrieve search results, news articles, and other relevant information from the web based on search queries.
 4. **SEC API Key** : Accesses financial filings and reports from the U.S. Securities and Exchange Commission (SEC). It is used to gather and analyze company filings like 10-K and 10-Q reports for detailed financial and regulatory information.
 
-## SCREENSHOTS OF THE OUTPUTS
+## SCREENSHOTS OF THE OUTPUTS(provided by our AI)
 <img src="ouptut1.png">
 <img src="output2.png">
 <img src="output3.png">
@@ -170,6 +170,9 @@ link to paper : [https://link.springer.com/chapter/10.1007/978-3-319-05458-2_6](
 <img src="output8.png">
 <img src="ouptut9.png">
 <img src="output10.png">
+
+## SCREENSHOTS OF THE OUTPUTS(provided by chatGPT)
+
 
 ## SUMMARY
 The project leverages various pre-trained tools and APIs to perform its tasks, without the need for traditional machine learning models like ANN or CNN. The integration of LLMs through LangChain and specific financial analysis tools forms the core of the project's analytical capabilities.
