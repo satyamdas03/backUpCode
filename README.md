@@ -152,6 +152,13 @@ link to paper : [https://link.springer.com/chapter/10.1007/978-3-319-05458-2_6](
 
 5. Finally we are going to merge all the above functions of the agents, tools and tasks to run the code and the get the final output.
 
+## Explanation of the APIs used, and their roles
+
+1. **OpenAI API Key** : Provides access to OpenAI's language models (e.g., GPT-4). It is used for natural language understanding, generation, and processing tasks, such as generating reports, analyzing text, and answering questions.
+2. **Browserless API Key** : Allows us to perform web scraping and automate browser interactions. It's used to extract data from websites by simulating browser actions, such as navigating pages and scraping content.
+3. **Serper API Key** : Provides search capabilities for querying search engines. It is used to retrieve search results, news articles, and other relevant information from the web based on search queries.
+4. **SEC API Key** : Accesses financial filings and reports from the U.S. Securities and Exchange Commission (SEC). It is used to gather and analyze company filings like 10-K and 10-Q reports for detailed financial and regulatory information.
+
 ## SCREENSHOTS OF THE OUTPUTS
 <img src="ouptut1.png">
 <img src="output2.png">
