@@ -172,7 +172,10 @@ link to paper : [https://link.springer.com/chapter/10.1007/978-3-319-05458-2_6](
 <img src="output10.png">
 
 ## SCREENSHOTS OF THE OUTPUTS(provided by chatGPT)
-
+*Prompted chatGPT to give an analysis on the stocks of APPLE*
+<img src="chatGPT1.png">
+<img src="chatGPT2.png">
+<img src="chatGPT3.png">
 
 ## SUMMARY
 The project leverages various pre-trained tools and APIs to perform its tasks, without the need for traditional machine learning models like ANN or CNN. The integration of LLMs through LangChain and specific financial analysis tools forms the core of the project's analytical capabilities.
