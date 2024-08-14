@@ -183,6 +183,15 @@ link to paper : [https://link.springer.com/chapter/10.1007/978-3-319-05458-2_6](
 
 **CLEARLY THE ANALYSIS PROVIDED BY OUR AI IS MUCH BETTER THE ONE PROVIDED BY chatGPT**
 
+## DETAILED REPORT ON YahooFinanceNewsTool 
+1. **Overview** : The YahooFinanceNewsTool is a component within the langchain library designed to interface with Yahoo Finance to fetch financial news. It is used primarily to gather up-to-date news articles related to financial markets, companies, and economic events. This tool is valuable for financial analysis, market research, sentiment analysis, and decision-making processes that depend on current news data.
+2. **Key Features** :
+   <ul>
+       <li><b>News Retrieval</b>: Fetches the latest news articles related to specific companies, sectors, or financial topics from Yahoo Finance.</li>
+       <li><b>Integration with LangChain</b>: Works seamlessly within the LangChain framework, allowing it to be integrated with other tools and workflows.</li>
+       <li><b>Customizable Queries</b>b>: Users can specify companies or financial topics to receive targeted news results.</li>
+   </ul>
+
 ## SUMMARY
 The project leverages various pre-trained tools and APIs to perform its tasks, without the need for traditional machine learning models like ANN or CNN. The integration of LLMs through LangChain and specific financial analysis tools forms the core of the project's analytical capabilities.
 
