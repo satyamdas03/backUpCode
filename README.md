@@ -117,7 +117,7 @@ If we were to incorporate a custom model, we might consider:
 
 The project utilizes LLMs through the LangChain library and specific tools like the **YahooFinanceNewsTool** and the custom agents defined in stock_analysis_agents.py. These tools and agents use pre-trained language models to perform tasks like **summarizing web content, searching the internet, and analyzing financial documents**.
 
-## THE PROJECT CAN BE CHANGED TO "LLM-Powered Financial Analysis and Investment Advisor"
+## THE PROJECT CAN BE CHANGED TO "LLM-Powered Financial Analysis"
 
 ## SOME RESEARCH WORKS TO SUPPORT THE IDEAS OF THIS PROJECT
 
