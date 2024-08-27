@@ -1,10 +1,13 @@
+import customtkinter as ctk
+import threading
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from crewai import Crew
-from textwrap import dedent
-
 from stock_analysis_agents import StockAnalysisAgents
 from stock_analysis_tasks import StockAnalysisTasks
-
 from dotenv import load_dotenv
+from graph_ai import parse_input  # Import the parse_input function from graph_ai.py
+
 load_dotenv()
 
 class FinancialCrew:
@@ -12,7 +15,7 @@ class FinancialCrew:
         self.company = company
 
     def run(self):
-        agents = StockAnalysisAgents()  # No need to pass llm
+        agents = StockAnalysisAgents()
         tasks = StockAnalysisTasks()
 
         research_analyst_agent = agents.research_analyst()
@@ -36,23 +39,111 @@ class FinancialCrew:
                 filings_task,
                 recommend_task
             ],
-            verbose=True
+            verbose=False  # Set verbose to False to suppress terminal output
         )
 
         result = crew.kickoff()
-        return result
+        final_summary = result.get("final_summary", "Summary not found")  # Modify the key as per your actual structure
+        return final_summary
+
+class FinancialAnalysisApp(ctk.CTk):
+    def __init__(self):
+        super().__init__()
+
+        self.title("Financial Analysis Terminal")
+        self.geometry("500x400")
+        self.resizable(False, False)  # Prevent window resizing
+
+        # Set up main frame
+        self.main_frame = ctk.CTkFrame(self)
+        # self.main_frame.pack(padx=10, pady=10, fill="both", expand=True)
+        self.main_frame.pack(padx=10, pady=10, fill="both", expand=True)
+
+        # Configure grid layout
+        self.main_frame.columnconfigure(0, weight=1)
+        self.main_frame.columnconfigure(1, weight=0)
+        self.main_frame.rowconfigure(3, weight=1)
+
+        # Company Name Label and Entry
+        self.company_label = ctk.CTkLabel(self.main_frame, text="Company Name:", font=("Arial", 18, "bold"))
+        self.company_label.grid(row=0, column=0, sticky="w")
+
+        self.company_entry = ctk.CTkEntry(self.main_frame, width=320)
+        self.company_entry.grid(row=0, column=1, sticky="e", padx=(10, 0))
+
+        # Analyze Button
+        self.analyze_button = ctk.CTkButton(self.main_frame, text="Analyze", command=self.start_analysis, width=100, font=("Arial", 14, "bold"))
+        self.analyze_button.grid(row=1, column=0, columnspan=2, pady=(15, 0))
+
+        # Analysis Result Textbox
+        self.analysis_text = ctk.CTkTextbox(self.main_frame, height=15, width=400)
+        # , sticky="nsew"
+        self.analysis_text.grid(row=2, column=0, columnspan=2, pady=(15, 0))
+
+        # Financial Metrics Label and Textbox
+        self.graph_input_label = ctk.CTkLabel(self.main_frame, text="Financial Metrics:", font=("Arial", 18, "bold"))
+        self.graph_input_label.grid(row=3, column=0, sticky="w", pady=(15, 0))
+
+        self.graph_input_text = ctk.CTkTextbox(self.main_frame, height=100, width=400)
+        self.graph_input_text.grid(row=4, column=0, columnspan=2, pady=(10, 0))
+
+        # Graph Type Dropdown
+        self.graph_type_var = ctk.StringVar()
+        self.graph_type_var.set("Bar Chart")  # Default option
+        self.graph_type_menu = ctk.CTkOptionMenu(self.main_frame, variable=self.graph_type_var, values=["Bar Chart", "Pie Chart", "Histogram","Sentiment Line Chart"], font=("Arial", 14, "bold"))
+        self.graph_type_menu.grid(row=5, column=0, columnspan=2, pady=(10, 0))
+
+        # Generate Graph Button
+        self.graph_button = ctk.CTkButton(self.main_frame, text="Generate Graph", command=self.generate_graph, width=120, font=("Arial", 14, "bold"))
+        self.graph_button.grid(row=6, column=0, columnspan=2, pady=(10, 0))
+
+        # Canvas for displaying the graph
+        self.graph_canvas = None
+
+    def start_analysis(self):
+        company_name = self.company_entry.get().strip()
+        if company_name:
+            self.analysis_text.delete("1.0", ctk.END)
+            self.analysis_text.insert(ctk.END, f"Analyzing {company_name}...\n")
+            threading.Thread(target=self.run_analysis, args=(company_name,)).start()
+        else:
+            self.analysis_text.delete("1.0", ctk.END)
+            self.analysis_text.insert(ctk.END, "Please enter a company name.")
+
+    def run_analysis(self, company_name):
+        summary = FinancialCrew(company_name).run()
+        self.analysis_text.insert(ctk.END, f"{summary}\n")
+
+    def generate_graph(self):
+        user_input = self.graph_input_text.get("1.0", ctk.END).strip()
+        graph_type = self.graph_type_var.get()  # Get selected graph type
+        if user_input:
+            parse_input(user_input, graph_type)  # Pass graph type to parse_input function
+            self.display_graph()
+        else:
+            ctk.messagebox.showwarning("Input Error", "Please enter financial metrics.")
+
+    def display_graph(self):
+        if self.graph_canvas:
+            self.graph_canvas.get_tk_widget().destroy()  # Remove previous canvas if it exists
+
+        fig = plt.gcf()  # Get the current figure from matplotlib
+
+        # Create a new window for the graph
+        graph_window = ctk.CTkToplevel(self)
+        graph_window.title("Financial Graph")
+        graph_window.resizable(False, False)
+
+        self.graph_canvas = FigureCanvasTkAgg(fig, master=graph_window)
+        self.graph_canvas.draw()
+        self.graph_canvas.get_tk_widget().pack(fill="both", expand=True)
+
+        # Close the matplotlib figure to prevent duplication
+        plt.close(fig)
 
 if __name__ == "__main__":
-    print("## Welcome to Financial Analysis Crew")
-    print('-------------------------------')
-    company = input(
-        dedent("""
-        What is the company you want to analyze?
-        """))
-    
-    financial_crew = FinancialCrew(company)
-    result = financial_crew.run()
-    print("\n\n########################")
-    print("## Here is the Report")
-    print("########################\n")
-    print(result)
+    app = FinancialAnalysisApp()
+    app.mainloop()
+
+
+
