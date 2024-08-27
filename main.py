@@ -145,5 +145,5 @@ if __name__ == "__main__":
     app = FinancialAnalysisApp()
     app.mainloop()
 
-
+## check if after forming the sentiment analysis can the model suggest : BUY or NOT BUY
 
