@@ -214,26 +214,26 @@ The **YahooFinanceNewsTool** is a powerful tool for accessing and utilizing fina
 
 
 ## SCREENSHOTS OF THE OUTPUTS(provided by our AI)
-<img src="ouptut1.png">
-<img src="output2.png">
-<img src="output3.png">
-<img src="output4.png">
-<img src="output5.png">
-<img src="output6.png">
-<img src="output7.png">
-<img src="output8.png">
-<img src="ouptut9.png">
-<img src="output10.png">
+<img src="outputs/ouptut1.png">
+<img src="outputs/output2.png">
+<img src="outputs/output3.png">
+<img src="outputs/output4.png">
+<img src="outputs/output5.png">
+<img src="outputs/output6.png">
+<img src="outputs/output7.png">
+<img src="outputs/output8.png">
+<img src="outputs/ouptut9.png">
+<img src="outputs/output10.png">
 
 ## SCREENSHOTS OF THE OUTPUTS(provided by chatGPT)
 
 *Prompted chatGPT to give an analysis on the stocks of APPLE*
 
-<img src="chatGPT1.png">
+<img src="outputs/chatGPT1.png">
 
-<img src="chatGPT2.png">
+<img src="outputs/chatGPT2.png">
 
-<img src="chatGPT3.png">
+<img src="outputs/chatGPT3.png">
 
 **CLEARLY THE ANALYSIS PROVIDED BY OUR AI IS MUCH BETTER THE ONE PROVIDED BY chatGPT**
 
