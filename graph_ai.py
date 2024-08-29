@@ -31,8 +31,10 @@ def parse_news_input(text, graph_type):
         sentiment = sid.polarity_scores(sentence)
         sentiment_scores.append(sentiment['compound'])  # Use compound score for overall sentiment
     
+    overall_sentiment = sum(sentiment_scores) / len(sentiment_scores) if sentiment_scores else 0  # Calculate average sentiment
+    
     if graph_type == "Sentiment Line Chart":
-        create_sentiment_line_chart(sentiment_scores)
+        create_sentiment_line_chart(sentiment_scores, overall_sentiment)
 
 def parse_financial_metrics(text, graph_type):
     global data
@@ -268,13 +270,27 @@ def create_histogram():
     
     plt.show()
 
-def create_sentiment_line_chart(sentiment_scores):
-    plt.clf()
+def create_sentiment_line_chart(sentiment_scores, overall_sentiment):
+    # Plot sentiment scores
+    plt.figure(figsize=(10, 6))
     plt.plot(sentiment_scores, marker='o', linestyle='-', color='b')
-    plt.title('Sentiment Trend Over News Articles')
-    plt.xlabel('Article Number')
+    plt.title('Sentiment Analysis Over Time')
+    plt.xlabel('Sentence Number')
     plt.ylabel('Sentiment Score')
-    plt.axhline(y=0, color='k', linestyle='--')
+    plt.axhline(0, color='gray', linewidth=0.8)  # Neutral line
+
+    # Display recommendation
+    if overall_sentiment > 0.05:
+        recommendation = "BUY"
+        plt.text(0.5, max(sentiment_scores), recommendation, color='green', fontsize=15, ha='center', fontweight='bold')
+    elif overall_sentiment < -0.05:
+        recommendation = "DON'T BUY"
+        plt.text(0.5, max(sentiment_scores), recommendation, color='red', fontsize=15, ha='center', fontweight='bold')
+    else:
+        recommendation = "HOLD/RE-EVALUATE"
+        plt.text(0.5, max(sentiment_scores), recommendation, color='orange', fontsize=15, ha='center', fontweight='bold')
+
+    # Show the plot
     plt.show()
 
 
