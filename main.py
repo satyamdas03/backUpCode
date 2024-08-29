@@ -121,12 +121,12 @@ class FinancialAnalysisApp(ctk.CTk):
         graph_type = self.graph_type_var.get()  # Get selected graph type
         if user_input:
             # Call the parse_input function and capture any recommendation output
-            recommendation = parse_input(user_input, graph_type)  # Assume parse_input returns recommendation text
-            self.display_graph(recommendation)
+            recommendation, reason = parse_input(user_input, graph_type)  # Update to capture reason
+            self.display_graph(recommendation, reason)  # Pass reason to display_graph
         else:
             ctk.messagebox.showwarning("Input Error", "Please enter financial metrics.")
 
-    def display_graph(self, recommendation=None):
+    def display_graph(self, recommendation=None, reason=None):
         if self.graph_canvas:
             self.graph_canvas.get_tk_widget().destroy()  # Remove previous canvas if it exists
 
@@ -145,6 +145,17 @@ class FinancialAnalysisApp(ctk.CTk):
         if recommendation:
             recommendation_label = ctk.CTkLabel(graph_window, text=recommendation, font=("Arial", 18, "bold"))
             recommendation_label.pack(pady=10)
+        
+        # Display the reason in a new window
+        if reason:
+            reason_window = ctk.CTkToplevel(self)
+            reason_window.title("Recommendation Reason")
+            reason_window.geometry("400x300")
+            reason_window.resizable(False, False)
+
+            reason_text = ctk.CTkTextbox(reason_window, width=380, height=280, wrap="word")
+            reason_text.pack(padx=10, pady=10)
+            reason_text.insert(ctk.END, reason)
 
         # Close the matplotlib figure to prevent duplication
         plt.close(fig)

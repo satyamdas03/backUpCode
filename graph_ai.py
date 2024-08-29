@@ -32,9 +32,25 @@ def parse_news_input(text, graph_type):
         sentiment_scores.append(sentiment['compound'])  # Use compound score for overall sentiment
     
     overall_sentiment = sum(sentiment_scores) / len(sentiment_scores) if sentiment_scores else 0  # Calculate average sentiment
+    recommendation, reason = generate_recommendation(overall_sentiment)  # Generate recommendation and reason
     
     if graph_type == "Sentiment Line Chart":
         create_sentiment_line_chart(sentiment_scores, overall_sentiment)
+
+    return recommendation, reason #Return both the recommendation and the reason 
+
+def generate_recommendation(overall_sentiment):
+    if overall_sentiment > 0.2:
+        recommendation = "BUY"
+        reason = "The overall sentiment is positive, suggesting optimism in the market. Consider buying the stock due to favorable conditions such as strong financial performance, positive news, and a bullish trend in sentiment."
+    elif overall_sentiment < -0.2:
+        recommendation = "DON'T BUY"
+        reason = "The overall sentiment is negative, indicating caution. It may be advisable to refrain from buying due to negative news, poor financial performance, or bearish sentiment in the market."
+    else:
+        recommendation = "HOLD"
+        reason = "The sentiment is neutral, indicating uncertainty. Holding the stock is recommended until clearer trends emerge or further analysis is conducted."
+    
+    return recommendation, reason
 
 def parse_financial_metrics(text, graph_type):
     global data
