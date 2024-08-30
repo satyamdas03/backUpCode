@@ -116,49 +116,17 @@ class FinancialAnalysisApp(ctk.CTk):
         summary = FinancialCrew(company_name).run()
         self.analysis_text.insert(ctk.END, f"{summary}\n")
 
-    def create_reasoning_window(reason):
-        # Import tkinter or customtkinter if not already done
-        import tkinter as tk
-        reasoning_window = tk.Toplevel()  # Create a new window
-        reasoning_window.title("Reasoning for Recommendation")
-
-        label = tk.Label(reasoning_window, text=reason)
-        label.pack()
-
-        close_button = tk.Button(reasoning_window, text="Close", command=reasoning_window.destroy)
-        close_button.pack()
-
-        reasoning_window.mainloop()
-
-
     def generate_graph(self):
-        user_input = self.graph_input_text.get("1.0", ctk.END).strip()  # Get user input from the GUI
-        graph_type = self.graph_type_var.get()  # Get selected graph type from the GUI
-
-        if user_input:  # Ensure there's user input to process
-            # Call the updated parse_input function and capture the result
-            result = parse_input(user_input, graph_type)
-
-            # Check if parse_input returned None
-            if result is None:
-                ctk.messagebox.showinfo("No Recommendation", "No recommendation available for the selected graph type.")
-                return  # Exit the function if there is no recommendation
-
-            # Safely unpack the recommendation and reason now
-            recommendation, reason = result
-
-            # Proceed to display the graph and reasoning
-            self.display_graph(recommendation, reason)  # Pass both recommendation and reason to display_graph
-
-            # If there's a reason provided, create a reasoning window or display it in a message box
-            if reason:
-                self.create_reasoning_window(reason)  # Example function to display the reasoning
+        user_input = self.graph_input_text.get("1.0", ctk.END).strip()
+        graph_type = self.graph_type_var.get()  # Get selected graph type
+        if user_input:
+            # Call the parse_input function and capture any recommendation output
+            recommendation = parse_input(user_input, graph_type)  # Assume parse_input returns recommendation text
+            self.display_graph(recommendation)
         else:
-            # Display a warning if user input is empty
             ctk.messagebox.showwarning("Input Error", "Please enter financial metrics.")
 
-
-    def display_graph(self, recommendation=None, reason=None):
+    def display_graph(self, recommendation=None):
         if self.graph_canvas:
             self.graph_canvas.get_tk_widget().destroy()  # Remove previous canvas if it exists
 
@@ -177,17 +145,6 @@ class FinancialAnalysisApp(ctk.CTk):
         if recommendation:
             recommendation_label = ctk.CTkLabel(graph_window, text=recommendation, font=("Arial", 18, "bold"))
             recommendation_label.pack(pady=10)
-        
-        # Display the reason in a new window
-        if reason:
-            reason_window = ctk.CTkToplevel(self)
-            reason_window.title("Recommendation Reason")
-            reason_window.geometry("400x300")
-            reason_window.resizable(False, False)
-
-            reason_text = ctk.CTkTextbox(reason_window, width=380, height=280, wrap="word")
-            reason_text.pack(padx=10, pady=10)
-            reason_text.insert(ctk.END, reason)
 
         # Close the matplotlib figure to prevent duplication
         plt.close(fig)
