@@ -37,7 +37,13 @@ def parse_news_input(text, graph_type):
     if graph_type == "Sentiment Line Chart":
         create_sentiment_line_chart(sentiment_scores, overall_sentiment)
 
-    return recommendation, reason #Return both the recommendation and the reason 
+    # Return both the recommendation and reason if they exist
+    if recommendation and reason:
+        return recommendation, reason
+    else:
+        return None  # Return None if no recommendation is generated
+    
+
 
 def generate_recommendation(overall_sentiment):
     if overall_sentiment > 0.2:
@@ -227,13 +233,32 @@ def parse_financial_metrics(text, graph_type):
 
     data = {key: value for key, value in metrics.items() if value is not None}
     
-    # Generate the appropriate chart based on user selection
-    if graph_type == "Bar Chart":
-        create_bar_chart()
-    elif graph_type == "Pie Chart":
-        create_pie_chart()
-    elif graph_type == "Histogram":
-        create_histogram()
+    # Determine recommendation based on financial metrics
+    if data:  # Check if any metrics are present
+        # You can set a threshold or some condition to make a recommendation
+        if (metrics["Earnings Per Share (EPS)"] and metrics["Earnings Per Share (EPS)"] > 1.0 and 
+            metrics["Return on Equity (ROE)"] and metrics["Return on Equity (ROE)"] > 15):
+            recommendation = "Buy"
+            reason = "Strong EPS and ROE indicate good performance."
+        elif metrics["Debt Ratio"] and metrics["Debt Ratio"] > 0.5:
+            recommendation = "Sell"
+            reason = "High Debt Ratio indicates financial risk."
+        else:
+            recommendation = "Hold"
+            reason = "Stable financial metrics over the last quarter."
+        
+        # Generate the appropriate chart based on user selection
+        if graph_type == "Bar Chart":
+            create_bar_chart()
+        elif graph_type == "Pie Chart":
+            create_pie_chart()
+        elif graph_type == "Histogram":
+            create_histogram()
+        
+        return recommendation, reason  # Return recommendation and reason
+    else:
+        # If no data was extracted, return None
+        return None
 
 # Function to create and display a bar chart
 def create_bar_chart():
