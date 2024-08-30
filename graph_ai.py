@@ -32,31 +32,9 @@ def parse_news_input(text, graph_type):
         sentiment_scores.append(sentiment['compound'])  # Use compound score for overall sentiment
     
     overall_sentiment = sum(sentiment_scores) / len(sentiment_scores) if sentiment_scores else 0  # Calculate average sentiment
-    recommendation, reason = generate_recommendation(overall_sentiment)  # Generate recommendation and reason
     
     if graph_type == "Sentiment Line Chart":
         create_sentiment_line_chart(sentiment_scores, overall_sentiment)
-
-    # Return both the recommendation and reason if they exist
-    if recommendation and reason:
-        return recommendation, reason
-    else:
-        return None  # Return None if no recommendation is generated
-    
-
-
-def generate_recommendation(overall_sentiment):
-    if overall_sentiment > 0.2:
-        recommendation = "BUY"
-        reason = "The overall sentiment is positive, suggesting optimism in the market. Consider buying the stock due to favorable conditions such as strong financial performance, positive news, and a bullish trend in sentiment."
-    elif overall_sentiment < -0.2:
-        recommendation = "DON'T BUY"
-        reason = "The overall sentiment is negative, indicating caution. It may be advisable to refrain from buying due to negative news, poor financial performance, or bearish sentiment in the market."
-    else:
-        recommendation = "HOLD"
-        reason = "The sentiment is neutral, indicating uncertainty. Holding the stock is recommended until clearer trends emerge or further analysis is conducted."
-    
-    return recommendation, reason
 
 def parse_financial_metrics(text, graph_type):
     global data
@@ -233,32 +211,13 @@ def parse_financial_metrics(text, graph_type):
 
     data = {key: value for key, value in metrics.items() if value is not None}
     
-    # Determine recommendation based on financial metrics
-    if data:  # Check if any metrics are present
-        # You can set a threshold or some condition to make a recommendation
-        if (metrics["Earnings Per Share (EPS)"] and metrics["Earnings Per Share (EPS)"] > 1.0 and 
-            metrics["Return on Equity (ROE)"] and metrics["Return on Equity (ROE)"] > 15):
-            recommendation = "Buy"
-            reason = "Strong EPS and ROE indicate good performance."
-        elif metrics["Debt Ratio"] and metrics["Debt Ratio"] > 0.5:
-            recommendation = "Sell"
-            reason = "High Debt Ratio indicates financial risk."
-        else:
-            recommendation = "Hold"
-            reason = "Stable financial metrics over the last quarter."
-        
-        # Generate the appropriate chart based on user selection
-        if graph_type == "Bar Chart":
-            create_bar_chart()
-        elif graph_type == "Pie Chart":
-            create_pie_chart()
-        elif graph_type == "Histogram":
-            create_histogram()
-        
-        return recommendation, reason  # Return recommendation and reason
-    else:
-        # If no data was extracted, return None
-        return None
+    # Generate the appropriate chart based on user selection
+    if graph_type == "Bar Chart":
+        create_bar_chart()
+    elif graph_type == "Pie Chart":
+        create_pie_chart()
+    elif graph_type == "Histogram":
+        create_histogram()
 
 # Function to create and display a bar chart
 def create_bar_chart():
