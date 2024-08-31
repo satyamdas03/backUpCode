@@ -2,6 +2,8 @@ import customtkinter as ctk
 import threading
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import yfinance as yf
+import time
 from crewai import Crew
 from stock_analysis_agents import StockAnalysisAgents
 from stock_analysis_tasks import StockAnalysisTasks
@@ -51,7 +53,7 @@ class FinancialAnalysisApp(ctk.CTk):
         super().__init__()
 
         self.title("Financial Analysis Terminal")
-        self.geometry("500x400")
+        self.geometry("700x600")
         self.resizable(False, False)  # Prevent window resizing
 
         # Set up main frame
@@ -98,6 +100,10 @@ class FinancialAnalysisApp(ctk.CTk):
         # Generate Graph Button
         self.graph_button = ctk.CTkButton(self.main_frame, text="Generate Graph", command=self.generate_graph, width=120, font=("Arial", 14, "bold"))
         self.graph_button.grid(row=7, column=0, columnspan=2, pady=(10, 0))
+
+        # Real-Time Stock Price Button
+        self.stock_price_button = ctk.CTkButton(self.main_frame, text="Show Real-Time Stock Prices", command=self.show_realtime_prices, width=200, font=("Arial", 14, "bold"))
+        self.stock_price_button.grid(row=8, column=0, columnspan=2, pady=(10, 0))
 
         # Canvas for displaying the graph
         self.graph_canvas = None
@@ -149,9 +155,37 @@ class FinancialAnalysisApp(ctk.CTk):
         # Close the matplotlib figure to prevent duplication
         plt.close(fig)
 
+    def show_realtime_prices(self):
+        company_name = self.company_entry.get().strip()
+        if company_name:
+            threading.Thread(target=self.fetch_and_plot_realtime_prices, args=(company_name,)).start()
+        else:
+            ctk.messagebox.showwarning("Input Error", "Please enter a company name to show real-time prices.")
+
+    def fetch_and_plot_realtime_prices(self, company_name):
+        stock_data = yf.Ticker(company_name)
+        fig, ax = plt.subplots()
+        graph_window = ctk.CTkToplevel(self)
+        graph_window.title("Real-Time Stock Prices")
+        graph_window.geometry("600x400")
+
+        canvas = FigureCanvasTkAgg(fig, master=graph_window)
+        canvas.get_tk_widget().pack(fill='both', expand=True)
+
+        def update_chart():
+            while True:
+                data = stock_data.history(period='1d', interval='1m')
+                ax.clear()
+                ax.plot(data.index, data['Close'], color='blue', label='Close Price')
+                ax.set_title(f'Real-Time Stock Price for {company_name}')
+                ax.set_xlabel('Time')
+                ax.set_ylabel('Price')
+                ax.legend()
+                canvas.draw()
+                time.sleep(5)  # Update every 5 seconds
+
+        threading.Thread(target=update_chart).start()
+
 if __name__ == "__main__":
     app = FinancialAnalysisApp()
     app.mainloop()
-
-
-
