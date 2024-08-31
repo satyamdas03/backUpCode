@@ -7,8 +7,25 @@ from stock_analysis_agents import StockAnalysisAgents
 from stock_analysis_tasks import StockAnalysisTasks
 from dotenv import load_dotenv
 from graph_ai import parse_input  # Import the parse_input function from graph_ai.py
+from ib_insync import IB, Stock, MarketOrder  # Import IBKR API
 
 load_dotenv()
+
+# Function to connect to Interactive Brokers
+def connect_to_ibkr():
+    ib = IB()
+    ib.connect('127.0.0.1', 7497, clientId=1)  # Ensure TWS/IB Gateway is running and configured to accept connections
+    return ib
+
+# Function to place a trade order based on analysis
+def place_trade(ib, symbol, action, quantity):
+    stock = Stock(symbol, 'SMART', 'USD')  # Replace with your market and currency
+    ib.qualifyContracts(stock)
+    order = MarketOrder(action, quantity)
+    trade = ib.placeOrder(stock, order)
+    print(f'Placing {action} order for {quantity} shares of {symbol}')
+    return trade
+
 
 class FinancialCrew:
     def __init__(self, company):
@@ -44,7 +61,27 @@ class FinancialCrew:
 
         result = crew.kickoff()
         final_summary = result.get("final_summary", "Summary not found")  # Modify the key as per your actual structure
-        return final_summary
+        sentiment_score = result.get("sentiment_score", 0)  # Extract sentiment score for trading decision
+        return final_summary, sentiment_score
+    
+    def execute_trading_strategy(self, sentiment_score):
+        # Connect to IBKR
+        ib = connect_to_ibkr()
+
+        # Determine action based on sentiment score
+        action = "HOLD"
+        if sentiment_score > 0.3:
+            action = "BUY"
+        elif sentiment_score < -0.3:
+            action = "SELL"
+
+        # Execute trade if buy/sell
+        if action != "HOLD":
+            trade = place_trade(ib, self.company, action, quantity=100)  # Example quantity
+            print(f"Trade status: {trade.orderStatus.status}")
+
+        # Disconnect after execution
+        ib.disconnect()
 
 class FinancialAnalysisApp(ctk.CTk):
     def __init__(self):
@@ -113,8 +150,29 @@ class FinancialAnalysisApp(ctk.CTk):
             self.analysis_text.insert(ctk.END, "Please enter a company name.")
 
     def run_analysis(self, company_name):
-        summary = FinancialCrew(company_name).run()
+        crew = FinancialCrew(company_name)
+        summary, sentiment_score = crew.run()
         self.analysis_text.insert(ctk.END, f"{summary}\n")
+        self.execute_trading_strategy(sentiment_score)
+
+    def execute_trading_strategy(self, sentiment_score):
+        crew = FinancialCrew(self.company_entry.get().strip())
+        trading_action = "HOLD"
+        if sentiment_score > 0.3:
+            trading_action = "BUY"
+        elif sentiment_score < -0.3:
+            trading_action = "SELL"
+        
+        self.trading_decision_text.delete("1.0", ctk.END)
+        self.trading_decision_text.insert(ctk.END, f"Trading Decision: {trading_action}\n")
+
+        if trading_action != "HOLD":
+            crew.execute_trading_strategy(sentiment_score)
+            self.trading_decision_text.insert(ctk.END, "Trade executed.\n")
+        else:
+            self.trading_decision_text.insert(ctk.END, "No trade executed.\n")
+
+    
 
     def generate_graph(self):
         user_input = self.graph_input_text.get("1.0", ctk.END).strip()
@@ -126,28 +184,19 @@ class FinancialAnalysisApp(ctk.CTk):
         else:
             ctk.messagebox.showwarning("Input Error", "Please enter financial metrics.")
 
-    def display_graph(self, recommendation=None):
+    def display_graph(self, recommendation):
+        # Assuming `parse_input` function generates a Matplotlib plot based on user input.
+        fig = plt.figure(figsize=(6, 4))
+
         if self.graph_canvas:
-            self.graph_canvas.get_tk_widget().destroy()  # Remove previous canvas if it exists
+            self.graph_canvas.get_tk_widget().destroy()
 
-        fig = plt.gcf()  # Get the current figure from matplotlib
-
-        # Create a new window for the graph
-        graph_window = ctk.CTkToplevel(self)
-        graph_window.title("Financial Graph")
-        graph_window.resizable(False, False)
-
-        self.graph_canvas = FigureCanvasTkAgg(fig, master=graph_window)
+        self.graph_canvas = FigureCanvasTkAgg(fig, self.main_frame)
+        self.graph_canvas.get_tk_widget().grid(row=10, column=0, columnspan=2)
         self.graph_canvas.draw()
-        self.graph_canvas.get_tk_widget().pack(fill="both", expand=True)
 
-        # If a recommendation was generated, display it
         if recommendation:
-            recommendation_label = ctk.CTkLabel(graph_window, text=recommendation, font=("Arial", 18, "bold"))
-            recommendation_label.pack(pady=10)
-
-        # Close the matplotlib figure to prevent duplication
-        plt.close(fig)
+            self.analysis_text.insert(ctk.END, f"\n{recommendation}\n")
 
 if __name__ == "__main__":
     app = FinancialAnalysisApp()
