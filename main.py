@@ -202,7 +202,7 @@ class RealTimeStockPriceFetcher:
                 prices = data['Close']
                 ax.clear()
 
-                ax.plot(prices.index, prices.values, color='#1fb453', linewidth=1.5)
+                ax.plot(prices.index, prices.values, color='#1fb453', linewidth=0.5)
                 ax.set_facecolor('#1e1e1e')
                 ax.set_title(f"Real-Time Price for {company_name}", fontsize=14, color='white')
                 ax.set_xlabel("Time", fontsize=12, color='white')
