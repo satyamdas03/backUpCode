@@ -12,6 +12,8 @@ from graph_ai import parse_input  # Import the parse_input function from graph_a
 import tkinter.messagebox as messagebox  # Import messagebox from tkinter
 import plotly.graph_objs as go
 import plotly.subplots as sp
+import matplotlib.dates as mdates
+
 
 load_dotenv()
 
@@ -182,42 +184,87 @@ class RealTimeStockPriceFetcher:
     def __init__(self):
         self.running = False
 
+    # def fetch_realtime_prices(self, company_name):
+    #     ticker = yf.Ticker(company_name)
+    #     try:
+    #         plt.ion()  # Turn on interactive mode
+    #         fig, ax = plt.subplots()  # Create a figure and an axis for the plot
+            
+    #         self.running = True
+    #         while self.running:
+    #             # Fetch 1-minute interval data for the last 7 days
+    #             data = ticker.history(period='7d', interval='1m')
+                
+    #             # Check if data is empty
+    #             if data.empty:
+    #                 print(f"No price data found for {company_name}, please check the ticker symbol.")
+    #                 break
+
+    #             # Extract the closing prices
+    #             prices = data['Close']
+
+    #             # Update the plot
+    #             ax.clear()  # Clear the previous data
+    #             ax.plot(prices.index, prices.values)  # Plot the new data
+    #             ax.set_title(f"Real-Time Price for {company_name}")
+    #             ax.set_xlabel("Time")
+    #             ax.set_ylabel("Price (USD)")
+    #             plt.draw()  # Update the plot
+    #             plt.pause(60)  # Pause for 60 seconds before updating again
+
+    #     except Exception as e:
+    #         print(f"Error fetching data: {e}")
+    #     finally:
+    #         plt.ioff()  # Turn off interactive mode after plotting is finished
+    #         plt.show()  # Show the final plot
+
+    # def stop(self):
+    #     self.running = False
+
     def fetch_realtime_prices(self, company_name):
         ticker = yf.Ticker(company_name)
         try:
             plt.ion()  # Turn on interactive mode
-            fig, ax = plt.subplots()  # Create a figure and an axis for the plot
-            
+            fig, ax = plt.subplots()
+            fig.patch.set_facecolor('#2c2f33')  # Set figure background color
+
             self.running = True
             while self.running:
-                # Fetch 1-minute interval data for the last 7 days
                 data = ticker.history(period='7d', interval='1m')
                 
-                # Check if data is empty
                 if data.empty:
                     print(f"No price data found for {company_name}, please check the ticker symbol.")
                     break
 
-                # Extract the closing prices
                 prices = data['Close']
+                ax.clear()
 
-                # Update the plot
-                ax.clear()  # Clear the previous data
-                ax.plot(prices.index, prices.values)  # Plot the new data
-                ax.set_title(f"Real-Time Price for {company_name}")
-                ax.set_xlabel("Time")
-                ax.set_ylabel("Price (USD)")
-                plt.draw()  # Update the plot
-                plt.pause(60)  # Pause for 60 seconds before updating again
+                ax.plot(prices.index, prices.values, color='#1f77b4', linewidth=1.5)
+                ax.set_facecolor('#1e1e1e')
+                ax.set_title(f"Real-Time Price for {company_name}", fontsize=14, color='white')
+                ax.set_xlabel("Time", fontsize=12, color='white')
+                ax.set_ylabel("Price (USD)", fontsize=12, color='white')
+
+                ax.xaxis.set_major_locator(mdates.MinuteLocator(interval=30))
+                ax.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
+
+                ax.grid(True, linestyle='--', alpha=0.6)
+                plt.setp(ax.get_xticklabels(), rotation=45, ha='right', color='white')
+                plt.setp(ax.get_yticklabels(), color='white')
+
+                plt.tight_layout()
+                plt.draw()
+                plt.pause(60)
 
         except Exception as e:
             print(f"Error fetching data: {e}")
         finally:
-            plt.ioff()  # Turn off interactive mode after plotting is finished
-            plt.show()  # Show the final plot
+            plt.ioff()
+            plt.show()
 
     def stop(self):
         self.running = False
+
 
 if __name__ == "__main__":
     app = FinancialAnalysisApp()
