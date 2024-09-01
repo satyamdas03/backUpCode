@@ -108,6 +108,8 @@ class FinancialAnalysisApp(ctk.CTk):
 
         # Canvas for displaying the graph
         self.graph_canvas = None
+        self.plot_thread = None
+        self.fetcher = RealTimeStockPriceFetcher()  # Initialize the RealTimeStockPriceFetcher class
 
     def start_analysis(self):
         company_name = self.company_entry.get().strip()
@@ -157,13 +159,36 @@ class FinancialAnalysisApp(ctk.CTk):
             messagebox.showwarning("Input Error", "Please enter a company name.")
             return
 
-        threading.Thread(target=self.fetch_realtime_prices, args=(company_name,)).start()
+        if self.plot_thread and self.plot_thread.is_alive():
+            messagebox.showwarning("Error", "Real-time price fetching is already running.")
+            return
+        
+        # Start real-time plotting in a separate thread
+        self.plot_thread = threading.Thread(target=self.fetcher.fetch_realtime_prices, args=(company_name,))
+        self.plot_thread.start()
+
+    def stop_realtime_prices(self):
+        if self.plot_thread and self.plot_thread.is_alive():
+            self.fetcher.stop()
+            self.plot_thread.join()
+
+    def on_closing(self):
+        self.stop_realtime_prices()
+        self.destroy()
+
+class RealTimeStockPriceFetcher:
+    def __init__(self):
+        self.running = False
 
     def fetch_realtime_prices(self, company_name):
         ticker = yf.Ticker(company_name)
         try:
-            while True:
-                # Adjust the period and interval according to the Yahoo Finance limitations
+            plt.ion()  # Turn on interactive mode
+            fig, ax = plt.subplots()  # Create a figure and an axis for the plot
+            
+            self.running = True
+            while self.running:
+                # Fetch 1-minute interval data for the last 7 days
                 data = ticker.history(period='7d', interval='1m')
                 
                 # Check if data is empty
@@ -171,14 +196,28 @@ class FinancialAnalysisApp(ctk.CTk):
                     print(f"No price data found for {company_name}, please check the ticker symbol.")
                     break
 
-                latest_close = data['Close'].iloc[-1]
-                print(f"Real-Time Price for {company_name}: ${latest_close:.2f}")
-                
-                time.sleep(60)  # Update every 60 seconds
-        except Exception as e:
-            print(f"Error fetching stock data: {e}")
+                # Extract the closing prices
+                prices = data['Close']
 
+                # Update the plot
+                ax.clear()  # Clear the previous data
+                ax.plot(prices.index, prices.values)  # Plot the new data
+                ax.set_title(f"Real-Time Price for {company_name}")
+                ax.set_xlabel("Time")
+                ax.set_ylabel("Price (USD)")
+                plt.draw()  # Update the plot
+                plt.pause(60)  # Pause for 60 seconds before updating again
+
+        except Exception as e:
+            print(f"Error fetching data: {e}")
+        finally:
+            plt.ioff()  # Turn off interactive mode after plotting is finished
+            plt.show()  # Show the final plot
+
+    def stop(self):
+        self.running = False
 
 if __name__ == "__main__":
     app = FinancialAnalysisApp()
+    app.protocol("WM_DELETE_WINDOW", app.on_closing)  # Handle window closing event
     app.mainloop()
