@@ -10,6 +10,8 @@ from stock_analysis_tasks import StockAnalysisTasks
 from dotenv import load_dotenv
 from graph_ai import parse_input  # Import the parse_input function from graph_ai.py
 import tkinter.messagebox as messagebox  # Import messagebox from tkinter
+import plotly.graph_objs as go
+import plotly.subplots as sp
 
 load_dotenv()
 
