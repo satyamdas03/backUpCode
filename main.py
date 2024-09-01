@@ -9,6 +9,7 @@ from stock_analysis_agents import StockAnalysisAgents
 from stock_analysis_tasks import StockAnalysisTasks
 from dotenv import load_dotenv
 from graph_ai import parse_input  # Import the parse_input function from graph_ai.py
+import tkinter.messagebox as messagebox  # Import messagebox from tkinter
 
 load_dotenv()
 
@@ -130,7 +131,7 @@ class FinancialAnalysisApp(ctk.CTk):
             recommendation = parse_input(user_input, graph_type)  # Assume parse_input returns recommendation text
             self.display_graph(recommendation)
         else:
-            ctk.messagebox.showwarning("Input Error", "Please enter financial metrics.")
+            messagebox.showwarning("Input Error", "Please enter financial metrics.")
 
     def display_graph(self, recommendation=None):
         if self.graph_canvas:
@@ -145,68 +146,36 @@ class FinancialAnalysisApp(ctk.CTk):
 
         self.graph_canvas = FigureCanvasTkAgg(fig, master=graph_window)
         self.graph_canvas.draw()
-        self.graph_canvas.get_tk_widget().pack(fill="both", expand=True)
+        self.graph_canvas.get_tk_widget().pack()
 
-        # If a recommendation was generated, display it
         if recommendation:
-            recommendation_label = ctk.CTkLabel(graph_window, text=recommendation, font=("Arial", 18, "bold"))
-            recommendation_label.pack(pady=10)
-
-        # Close the matplotlib figure to prevent duplication
-        plt.close(fig)
+            messagebox.showinfo("Recommendation", recommendation)  # Display the recommendation as a messagebox
 
     def show_realtime_prices(self):
         company_name = self.company_entry.get().strip()
-        if company_name:
-            threading.Thread(target=self.fetch_and_plot_realtime_prices, args=(company_name,)).start()
-        else:
-            ctk.messagebox.showwarning("Input Error", "Please enter a company name to show real-time prices.")
+        if not company_name:
+            messagebox.showwarning("Input Error", "Please enter a company name.")
+            return
 
+        threading.Thread(target=self.fetch_realtime_prices, args=(company_name,)).start()
 
-    def fetch_and_plot_realtime_prices(self, company_name):
-        # Validating the company ticker and handling exception
+    def fetch_realtime_prices(self, company_name):
+        ticker = yf.Ticker(company_name)
         try:
-            stock_data = yf.Ticker(company_name)
-            
-            # Opening a new window for displaying the plot
-            graph_window = ctk.CTkToplevel(self)
-            graph_window.title(f"Real-Time Stock Prices for {company_name}")
-            graph_window.geometry("600x400")
-            
-            fig, ax = plt.subplots()
+            while True:
+                data = ticker.history(period='1mo', interval='1m')
+                
+                # Check if data is empty
+                if data.empty:
+                    print(f"No price data found for {company_name}, please check the ticker symbol.")
+                    break
 
-            # Using Canvas to display the Matplotlib plot in the Tkinter window
-            canvas = FigureCanvasTkAgg(fig, master=graph_window)
-            canvas.get_tk_widget().pack(fill='both', expand=True)
-            
-            def update_chart():
-                try:
-                    # Use a valid period like '1mo' for 1-minute interval data
-                    data = stock_data.history(period='1d', interval='1m')
-                    
-                    if data.empty:
-                        raise ValueError("No data fetched, check if the ticker is correct.")
-                    
-                    ax.clear()
-                    ax.plot(data.index, data['Close'], color='blue', label='Close Price')
-                    ax.set_title(f'Real-Time Stock Price for {company_name}')
-                    ax.set_xlabel('Time')
-                    ax.set_ylabel('Price')
-                    ax.legend()
-                    canvas.draw()
-                    
-                    # Schedule next update
-                    graph_window.after(5000, update_chart)  # Update every 5 seconds
-                except Exception as e:
-                    # Show warning if there is an error fetching data
-                    ctk.messagebox.showerror("Data Error", f"Could not fetch data: {str(e)}")
-            
-            # Start the first update
-            update_chart()
-
+                latest_close = data['Close'].iloc[-1]
+                print(f"Real-Time Price for {company_name}: ${latest_close:.2f}")
+                
+                time.sleep(60)  # Update every 60 seconds
         except Exception as e:
-            ctk.messagebox.showerror("Error", f"An error occurred: {str(e)}")
-
+            print(f"Error fetching stock data: {e}")
 
 if __name__ == "__main__":
     app = FinancialAnalysisApp()
