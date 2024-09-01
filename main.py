@@ -103,7 +103,7 @@ class FinancialAnalysisApp(ctk.CTk):
 
         # Real-Time Stock Price Button
         self.stock_price_button = ctk.CTkButton(self.main_frame, text="Show Real-Time Stock Prices", command=self.show_realtime_prices, width=200, font=("Arial", 14, "bold"))
-        self.stock_price_button.grid(row=8, column=0, columnspan=2, pady=(10, 0))
+        self.stock_price_button.grid(row=8, column=0, columnspan=2, pady=(25, 0))
 
         # Canvas for displaying the graph
         self.graph_canvas = None
