@@ -163,7 +163,8 @@ class FinancialAnalysisApp(ctk.CTk):
         ticker = yf.Ticker(company_name)
         try:
             while True:
-                data = ticker.history(period='1mo', interval='1m')
+                # Adjust the period and interval according to the Yahoo Finance limitations
+                data = ticker.history(period='7d', interval='1m')
                 
                 # Check if data is empty
                 if data.empty:
@@ -176,6 +177,7 @@ class FinancialAnalysisApp(ctk.CTk):
                 time.sleep(60)  # Update every 60 seconds
         except Exception as e:
             print(f"Error fetching stock data: {e}")
+
 
 if __name__ == "__main__":
     app = FinancialAnalysisApp()
