@@ -208,8 +208,8 @@ class RealTimeStockPriceFetcher:
                 ax.set_xlabel("Time", fontsize=12, color='white')
                 ax.set_ylabel("Price (USD)", fontsize=12, color='white')
 
-                ax.xaxis.set_major_locator(mdates.MinuteLocator(interval=30))
-                ax.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
+                # ax.xaxis.set_major_locator(mdates.MinuteLocator(interval=30))
+                # ax.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
 
                 ax.grid(True, linestyle='--', alpha=0.6)
                 plt.setp(ax.get_xticklabels(), rotation=45, ha='right', color='white')
