@@ -164,30 +164,48 @@ class FinancialAnalysisApp(ctk.CTk):
 
 
     def fetch_and_plot_realtime_prices(self, company_name):
-        stock_data = yf.Ticker(company_name)
-        fig, ax = plt.subplots()
-        graph_window = ctk.CTkToplevel(self)
-        graph_window.title("Real-Time Stock Prices")
-        graph_window.geometry("600x400")
+        # Validating the company ticker and handling exception
+        try:
+            stock_data = yf.Ticker(company_name)
+            
+            # Opening a new window for displaying the plot
+            graph_window = ctk.CTkToplevel(self)
+            graph_window.title(f"Real-Time Stock Prices for {company_name}")
+            graph_window.geometry("600x400")
+            
+            fig, ax = plt.subplots()
 
-        canvas = FigureCanvasTkAgg(fig, master=graph_window)
-        canvas.get_tk_widget().pack(fill='both', expand=True)
+            # Using Canvas to display the Matplotlib plot in the Tkinter window
+            canvas = FigureCanvasTkAgg(fig, master=graph_window)
+            canvas.get_tk_widget().pack(fill='both', expand=True)
+            
+            def update_chart():
+                try:
+                    # Use a valid period like '1mo' for 1-minute interval data
+                    data = stock_data.history(period='1d', interval='1m')
+                    
+                    if data.empty:
+                        raise ValueError("No data fetched, check if the ticker is correct.")
+                    
+                    ax.clear()
+                    ax.plot(data.index, data['Close'], color='blue', label='Close Price')
+                    ax.set_title(f'Real-Time Stock Price for {company_name}')
+                    ax.set_xlabel('Time')
+                    ax.set_ylabel('Price')
+                    ax.legend()
+                    canvas.draw()
+                    
+                    # Schedule next update
+                    graph_window.after(5000, update_chart)  # Update every 5 seconds
+                except Exception as e:
+                    # Show warning if there is an error fetching data
+                    ctk.messagebox.showerror("Data Error", f"Could not fetch data: {str(e)}")
+            
+            # Start the first update
+            update_chart()
 
-        def update_chart():
-            data = stock_data.history(period='1d', interval='1m')
-            ax.clear()
-            ax.plot(data.index, data['Close'], color='blue', label='Close Price')
-            ax.set_title(f'Real-Time Stock Price for {company_name}')
-            ax.set_xlabel('Time')
-            ax.set_ylabel('Price')
-            ax.legend()
-            canvas.draw()
-        
-            # Schedule next update
-            graph_window.after(5000, update_chart)  # Update every 5 seconds
-
-        # Start the first update
-        update_chart()
+        except Exception as e:
+            ctk.messagebox.showerror("Error", f"An error occurred: {str(e)}")
 
 
 if __name__ == "__main__":
