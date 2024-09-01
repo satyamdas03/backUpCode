@@ -17,6 +17,22 @@ import matplotlib.dates as mdates
 
 load_dotenv()
 
+# Function to get the ticker symbol for a given company name
+def get_ticker_symbol(company_name):
+    # Search for the company using yfinance
+    try:
+        # Using the Ticker module to get info
+        search_results = yf.Ticker(company_name).info
+        
+        # Retrieve the ticker symbol from the search results
+        ticker_symbol = search_results.get('symbol', None)
+        if ticker_symbol:
+            return ticker_symbol
+        else:
+            raise ValueError(f"No ticker symbol found for {company_name}.")
+    except Exception as e:
+        raise ValueError(f"Error retrieving ticker symbol for {company_name}: {e}")
+
 class FinancialCrew:
     def __init__(self, company):
         self.company = company
@@ -163,12 +179,17 @@ class FinancialAnalysisApp(ctk.CTk):
             messagebox.showwarning("Input Error", "Please enter a company name.")
             return
 
+        try:
+            ticker_symbol = get_ticker_symbol(company_name)
+        except ValueError as e:
+            messagebox.showwarning("Error", str(e))
+            return
+
         if self.plot_thread and self.plot_thread.is_alive():
             messagebox.showwarning("Error", "Real-time price fetching is already running.")
             return
-        
-        # Start real-time plotting in a separate thread
-        self.plot_thread = threading.Thread(target=self.fetcher.fetch_realtime_prices, args=(company_name,))
+
+        self.plot_thread = threading.Thread(target=self.fetcher.fetch_realtime_prices, args=(ticker_symbol,))
         self.plot_thread.start()
 
     def stop_realtime_prices(self):
@@ -207,10 +228,6 @@ class RealTimeStockPriceFetcher:
                 ax.set_title(f"Real-Time Price for {company_name}", fontsize=14, color='white')
                 ax.set_xlabel("Time", fontsize=12, color='white')
                 ax.set_ylabel("Price (USD)", fontsize=12, color='white')
-
-                # ax.xaxis.set_major_locator(mdates.MinuteLocator(interval=30))
-                # ax.xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
-
                 ax.grid(True, linestyle='--', alpha=0.6)
                 plt.setp(ax.get_xticklabels(), rotation=45, ha='right', color='white')
                 plt.setp(ax.get_yticklabels(), color='white')
@@ -230,6 +247,7 @@ class RealTimeStockPriceFetcher:
 
     def stop(self):
         self.running = False
+
 
 
 if __name__ == "__main__":
