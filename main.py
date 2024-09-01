@@ -184,43 +184,6 @@ class RealTimeStockPriceFetcher:
     def __init__(self):
         self.running = False
 
-    # def fetch_realtime_prices(self, company_name):
-    #     ticker = yf.Ticker(company_name)
-    #     try:
-    #         plt.ion()  # Turn on interactive mode
-    #         fig, ax = plt.subplots()  # Create a figure and an axis for the plot
-            
-    #         self.running = True
-    #         while self.running:
-    #             # Fetch 1-minute interval data for the last 7 days
-    #             data = ticker.history(period='7d', interval='1m')
-                
-    #             # Check if data is empty
-    #             if data.empty:
-    #                 print(f"No price data found for {company_name}, please check the ticker symbol.")
-    #                 break
-
-    #             # Extract the closing prices
-    #             prices = data['Close']
-
-    #             # Update the plot
-    #             ax.clear()  # Clear the previous data
-    #             ax.plot(prices.index, prices.values)  # Plot the new data
-    #             ax.set_title(f"Real-Time Price for {company_name}")
-    #             ax.set_xlabel("Time")
-    #             ax.set_ylabel("Price (USD)")
-    #             plt.draw()  # Update the plot
-    #             plt.pause(60)  # Pause for 60 seconds before updating again
-
-    #     except Exception as e:
-    #         print(f"Error fetching data: {e}")
-    #     finally:
-    #         plt.ioff()  # Turn off interactive mode after plotting is finished
-    #         plt.show()  # Show the final plot
-
-    # def stop(self):
-    #     self.running = False
-
     def fetch_realtime_prices(self, company_name):
         ticker = yf.Ticker(company_name)
         try:
@@ -239,7 +202,7 @@ class RealTimeStockPriceFetcher:
                 prices = data['Close']
                 ax.clear()
 
-                ax.plot(prices.index, prices.values, color='#1f77b4', linewidth=1.5)
+                ax.plot(prices.index, prices.values, color='#1fb453', linewidth=1.5)
                 ax.set_facecolor('#1e1e1e')
                 ax.set_title(f"Real-Time Price for {company_name}", fontsize=14, color='white')
                 ax.set_xlabel("Time", fontsize=12, color='white')
@@ -251,6 +214,9 @@ class RealTimeStockPriceFetcher:
                 ax.grid(True, linestyle='--', alpha=0.6)
                 plt.setp(ax.get_xticklabels(), rotation=45, ha='right', color='white')
                 plt.setp(ax.get_yticklabels(), color='white')
+
+                # Adjust axis margins to remove white space
+                plt.subplots_adjust(left=0, bottom=0.2)
 
                 plt.tight_layout()
                 plt.draw()
