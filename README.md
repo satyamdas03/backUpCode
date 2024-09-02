@@ -395,6 +395,25 @@ link to paper : [https://link.springer.com/chapter/10.1007/978-3-319-05458-2_6](
 The **YahooFinanceNewsTool** is a powerful tool for accessing and utilizing financial news data from Yahoo Finance. By integrating it into your financial analysis workflows, you can enhance your ability to make informed decisions based on the latest market information. Proper configuration, understanding of its features, and adherence to usage guidelines will maximize the effectiveness of this tool in your financial analysis projects.
 
 
+## SCREENSHOTS OF THE GUI and the steps of using it
+1. **by running `py main.py` in the terminal, the following gui will appear**
+<img src="gui/basicguiscreenshot.png">
+
+2. **The user is supposed to enter the company name in the message box beside it. Then press the `Analyze` button to start the analysis of the stocks of the company, which will be carried out in the terminal. Since, the whole analysis takes a lot of space, therefore we couldn't fit it inside the gui.**
+<img src="gui/analysistakingplace.png>
+
+3. **The user is supposed to copy the analysis from the terminal, and paste it inside the message box under the Financial Metrics functionality. The user will be able to visualize the graphical representation of the company's stocks analysis, which will provide a better insight regarding the company's stocks.**
+<img src="gui/pastingoftheanalyticdataofthecompany.png>
+
+4. **There are 4 options of graphical representation provided to the user, so that better understanding of the stocks of the company is easily available.**
+<img src="gui/optionsofgraphs.png">
+<img src="gui/barchart.png">
+<img src="gui/piechart.png">
+<img src="gui/histogramchart.png">
+
+5. **Along with all that, the user will also get the recommendation to BUY/DON'T BUY/HOLD the stocks of that particular company. This is done with the help of NLP's sentiment analysis. The final answer will be shown along side the sentiment analysis line chart.**
+<img src="gui/sentimentanalysislinechart.png">
+
 ## SCREENSHOTS OF THE OUTPUTS(provided by our AI)
 <img src="outputs/ouptut1.png">
 <img src="outputs/output2.png">
