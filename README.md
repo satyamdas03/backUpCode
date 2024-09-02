@@ -399,13 +399,13 @@ The **YahooFinanceNewsTool** is a powerful tool for accessing and utilizing fina
 1. **by running `py main.py` in the terminal, the following gui will appear**
 <img src="gui/basicguiscreenshot.png">
 
-2. **The user is supposed to enter the company name in the message box beside it. Then press the `Analyze` button to start the analysis of the stocks of the company, which will be carried out in the terminal. Since, the whole analysis takes a lot of space, therefore we couldn't fit it inside the gui.**
+2. **The user should enter the company name in the provided input field and then click the `Analyze` button to initiate the stock analysis for the specified company. The analysis will be performed in the terminal, as it involves a comprehensive and detailed process that requires more space than can be accommodated within the GUI interface.**
 <img src="gui/analysistakingplace.png>
 
-3. **The user is supposed to copy the analysis from the terminal, and paste it inside the message box under the Financial Metrics functionality. The user will be able to visualize the graphical representation of the company's stocks analysis, which will provide a better insight regarding the company's stocks.**
+3. **The user is expected to copy the analysis output from the terminal and paste it into the input field under the `Financial Metrics` section. This will allow the user to visualize a graphical representation of the company's stock analysis, providing deeper insights into the financial performance and key metrics of the company.**
 <img src="gui/pastingoftheanalyticdataofthecompany.png>
 
-4. **There are 4 options of graphical representation provided to the user, so that better understanding of the stocks of the company is easily available.**
+4. **The application offers four different graphical representation options, enabling users to gain a clearer and more comprehensive understanding of the company's stock performance.**
 <img src="gui/optionsofgraphs.png">
 <img src="gui/barchart.png">
 <img src="gui/piechart.png">
