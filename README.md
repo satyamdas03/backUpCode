@@ -152,7 +152,7 @@ link to paper : [https://link.springer.com/chapter/10.1007/978-3-319-05458-2_6](
 
 5. The code in main.py is Python application creates a graphical user interface (GUI) for financial analysis using the `customtkinter` library. The application allows users to input a company name, analyze its financial data, and visualize the results through various types of charts (e.g., bar charts, pie charts, histograms, and sentiment line charts).
 
-    ### Key Components of the Application
+    ### Key Components of the Code
 
     #### Libraries and Modules
 
@@ -245,7 +245,26 @@ link to paper : [https://link.springer.com/chapter/10.1007/978-3-319-05458-2_6](
 
     **This code provides a comprehensive GUI for financial analysis using a combination of Python libraries and custom modules. It integrates real-time data processing, asynchronous operations, and interactive visualizations, making it a powerful tool for analyzing financial data and generating insights.**
 
-6. Finally we are going to merge all the above functions of the agents, tools and tasks to run the code and the get the final output.
+6. The code in the graph_ai.py is the Python script is designed to perform financial sentiment analysis and visualize financial metrics using different types of charts. It leverages the VADER (Valence Aware Dictionary and sEntiment Reasoner) sentiment analysis tool from the `nltk` library to analyze financial news or text, extract key financial metrics, and visualize data in various chart formats.
+
+    ### Key Components of the Code
+
+    #### Libraries and Modules
+    - **nltk.sentiment.vader.SentimentIntensityAnalyzer**: A tool for analyzing the sentiment of sentences. It calculates positive, negative, neutral, and compound sentiment scores.
+    - **matplotlib.pyplot** and **seaborn**: Libraries for creating and customizing charts and plots.
+    - **nltk**: Natural Language Toolkit used for text processing and tokenization.
+    - **re**: Regular expression library used for extracting numerical values from text.
+
+    ### Detailed Explanation of the Code
+
+    1. **Setup and Initialization**
+    ```python
+    nltk.download('punkt')
+    nltk.download('vader_lexicon')
+    ```
+
+
+7. Finally we are going to merge all the above functions of the agents, tools and tasks to run the code and the get the final output.
 
 ## Explanation of the APIs used, and their roles
 
