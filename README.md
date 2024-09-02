@@ -278,11 +278,59 @@ link to paper : [https://link.springer.com/chapter/10.1007/978-3-319-05458-2_6](
     ```
     - Purpose: Analyzes the sentiment of the input text (financial news or articles).
     - Process:
-        - Tokenizes the text into sentences using sent_tokenize().
+        - Tokenizes the text into sentences using `sent_tokenize()`.
+        - Calculates the sentiment score for each sentence using VADER's `polarity_scores()` method and stores the compound sentiment scores.
+        - Calculates the overall sentiment as the average of all compound scores.
+        - If the `graph_type` is "Sentiment Line Chart," it calls `create_sentiment_line_chart()` to visualize the sentiment over time.
+    ```python
+    parse_financial_metrics(text, graph_type)
+    ```
+    - Purpose: Extracts various financial metrics from the input text.
+    - Process:
+        - Defines a dictionary of financial metrics to extract.
+        - Tokenizes the text into sentences
+        - Uses regular expressions to search for metric values in each sentence.
+        - Populates the `metrics` dictionary with the extracted values.
+        - Updates the global `data` dictionary with the extracted metrics.
+        - Calls the appropriate chart creation function (`create_bar_chart()`, `create_pie_chart()`, or `create_histogram()`) based on graph_type.
+    ```python
+    create_bar_chart()
+    create_pie_chart()
+    create_histogram()
+    ```
+    - Purpose: These functions generate different types of charts to visualize the extracted financial metrics.
+    - Process:
+        - Bar Chart: Uses Seaborn to create a bar plot showing the value of each financial metric.
+        - Pie Chart: Creates a pie chart that represents the proportion of each financial metric.
+        - Histogram: Displays the distribution of the metric values using a histogram.
+     ```python
+     create_sentiment_line_chart(sentiment_scores, overall_sentiment)
+    ```
+    - Purpose: Visualizes the sentiment scores over time.
+    - Process:
+        - Plots the sentiment scores of sentences over time using a line chart.
+        - Adds a neutral line (sentiment = 0) to help differentiate between positive and negative sentiment.
+        - Provides a recommendation ("BUY", "DON'T BUY", "HOLD/RE-EVALUATE") based on the overall sentiment:
+            - **BUY**: if the average sentiment score is significantly positive.
+            - **DON'T BUY**: if the average sentiment score is significantly negative.
+            - **HOLD/RE-EVALUATE**: if the average sentiment score is neutral.
+    3. **Key Functionalities**
+    - Sentiment Analysis: Determines the sentiment of financial news, which can help in making investment decisions.
+    - Financial Metrics Extraction: Extracts and analyzes various key financial metrics from textual data.
+    - Data Visualization: Provides graphical representations of the sentiment and financial metrics, making it easier to interpret the data.
 
+    ### How the Code Works
+    1. **User Input**: The user provides text data (financial news or a report) and selects a type of graph to visualize.
+    2. **Analysis**:
+        - If sentiment analysis is selected, the code performs sentiment analysis and visualizes the results in a line chart.
+        - If financial metrics analysis is selected, the code extracts key financial metrics from the text and visualizes the results in the    selected chart type.
+    3. **Visualization**: Based on the user's selection, the application displays the appropriate chart, helping the user make informed decisions based on sentiment or financial data.
 
+    ### Usage Scenarios
+    1. **Sentiment Analysis**: For analyzing the tone of financial news to gauge market sentiment.
+    2. **Financial Metrics Visualization**: To visualize and compare financial metrics of companies from financial reports.
 
-
+    **This script is useful for both financial analysts and casual investors who want to automate the process of sentiment analysis and financial metrics visualization. The tool provides both sentiment insights and key financial metrics in a visual format that is easy to understand.**
 
 7. Finally we are going to merge all the above functions of the agents, tools and tasks to run the code and the get the final output.
 
