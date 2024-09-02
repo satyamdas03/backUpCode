@@ -262,6 +262,26 @@ link to paper : [https://link.springer.com/chapter/10.1007/978-3-319-05458-2_6](
     nltk.download('punkt')
     nltk.download('vader_lexicon')
     ```
+    - Downloads the necessary data files for sentence tokenization and the VADER lexicon required for sentiment analysis.
+    ```python
+    sid = SentimentIntensityAnalyzer()
+    data = {}
+    ```
+    - Initializes the SentimentIntensityAnalyzer and an empty dictionary data to store financial metrics.
+    2. **Function Definitions**
+    ```python
+    parse_input(text, graph_type)
+    ```
+    - Purpose: This function determines the type of analysis to perform based on the `graph_type` parameter. It either calls `parse_news_input` for sentiment analysis or `parse_financial_metrics` for financial data extraction.
+    ```python
+    parse_news_input(text, graph_type)
+    ```
+    - Purpose: Analyzes the sentiment of the input text (financial news or articles).
+    - Process:
+        - Tokenizes the text into sentences using sent_tokenize().
+
+
+
 
 
 7. Finally we are going to merge all the above functions of the agents, tools and tasks to run the code and the get the final output.
