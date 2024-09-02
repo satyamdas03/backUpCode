@@ -152,9 +152,9 @@ link to paper : [https://link.springer.com/chapter/10.1007/978-3-319-05458-2_6](
 
 5. The code in main.py is Python application creates a graphical user interface (GUI) for financial analysis using the `customtkinter` library. The application allows users to input a company name, analyze its financial data, and visualize the results through various types of charts (e.g., bar charts, pie charts, histograms, and sentiment line charts).
 
-    ## Key Components of the Application
+    ### Key Components of the Application
 
-    ### Libraries and Modules
+    #### Libraries and Modules
 
     - **customtkinter as ctk**: A modernized version of the Tkinter library, used to create the GUI.
     - **threading**: Allows for running functions in separate threads, enabling asynchronous operations (like fetching financial data).
@@ -163,29 +163,29 @@ link to paper : [https://link.springer.com/chapter/10.1007/978-3-319-05458-2_6](
     - **dotenv**: Used to load environment variables from a `.env` file.
     - **parse_input**: A function from a custom module `graph_ai.py` that processes user input for generating graphs.
 
-    ### Classes
+    #### Classes
 
     1. **FinancialCrew**: Handles the financial analysis logic. It initializes with a company name and runs a series of tasks to gather financial data and provide a summary.
     2. **FinancialAnalysisApp**: The main GUI application class, inheriting from `ctk.CTk` (a custom Tkinter class). This class sets up the GUI layout, handles user interactions, and integrates the analysis logic provided by the `FinancialCrew` class.
 
-    ## Detailed Explanation of the Code
+    ### Detailed Explanation of the Code
 
-    ### FinancialCrew Class
+    #### FinancialCrew Class
 
-    #### `__init__` Method
+    ##### `__init__` Method
 
     - Initializes the class with a `company` parameter, storing the company name for analysis.
 
-    #### `run` Method
+    ##### `run` Method
 
     - Initializes agents and tasks using `StockAnalysisAgents` and `StockAnalysisTasks`.
     - Configures different agents for research, financial analysis, filings analysis, and investment recommendations.
     - Creates a `Crew` instance with these agents and tasks, then starts the analysis with `crew.kickoff()`.
     - Returns the final summary of the analysis as a string.
 
-    ### FinancialAnalysisApp Class
+    #### FinancialAnalysisApp Class
 
-    #### `__init__` Method
+    ##### `__init__` Method
 
     - Initializes the GUI window with a title and fixed size.
     - Creates a main frame to contain all widgets and sets up a grid layout.
@@ -195,32 +195,32 @@ link to paper : [https://link.springer.com/chapter/10.1007/978-3-319-05458-2_6](
     - Adds a dropdown menu for selecting the type of graph to generate.
     - Prepares a placeholder (`graph_canvas`) for displaying the generated graph.
 
-    #### `start_analysis` Method
+    ##### `start_analysis` Method
 
     - Retrieves the company name from the entry box and starts the analysis in a new thread to avoid blocking the main GUI thread.
     - If the input is valid, it clears the analysis text box and shows a message that the analysis has started.
     - If no company name is entered, it prompts the user to enter one.
 
-    #### `run_analysis` Method
+    ##### `run_analysis` Method
 
     - Runs the analysis by creating an instance of `FinancialCrew` with the provided company name.
     - Retrieves the analysis summary and displays it in the analysis text box.
 
-    #### `generate_graph` Method
+    ##### `generate_graph` Method
 
     - Retrieves the user input from the financial metrics textbox.
     - Checks the selected graph type from the dropdown menu.
     - Calls the `parse_input` function (assumed to process input and generate recommendations for graphs).
     - Displays the generated graph and any recommendations.
 
-    #### `display_graph` Method
+    ##### `display_graph` Method
 
     - If a graph canvas already exists, it is destroyed to prevent overlapping graphs.
     - Retrieves the current matplotlib figure and displays it in a new window using `FigureCanvasTkAgg`.
     - If a recommendation is provided, it is displayed as a label in the new window.
     - Closes the matplotlib figure after rendering to avoid duplication.
 
-    ## Functionality Overview
+    ### Functionality Overview
 
     1. **User Inputs Company Name**:
     - The user enters a company name in the input field and clicks the "Analyze" button.
@@ -238,12 +238,10 @@ link to paper : [https://link.springer.com/chapter/10.1007/978-3-319-05458-2_6](
     - The application displays the graph in a new window within the GUI.
     - If there are any recommendations or insights related to the graph, they are also displayed.
 
-    ## Main Program Execution
+    ### Main Program Execution
 
     In the `if __name__ == "__main__"` block:
     - Creates an instance of `FinancialAnalysisApp` and starts the GUI main loop (`app.mainloop()`), which keeps the application running and responsive to user inputs.
-
-    ## Conclusion
 
     This code provides a comprehensive GUI for financial analysis using a combination of Python libraries and custom modules. It integrates real-time data processing, asynchronous operations, and interactive visualizations, making it a powerful tool for analyzing financial data and generating insights.
 
