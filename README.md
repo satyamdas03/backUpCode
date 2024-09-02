@@ -400,10 +400,10 @@ The **YahooFinanceNewsTool** is a powerful tool for accessing and utilizing fina
 <img src="gui/basicguiscreenshot.png">
 
 2. **The user should enter the company name in the provided input field and then click the `Analyze` button to initiate the stock analysis for the specified company. The analysis will be performed in the terminal, as it involves a comprehensive and detailed process that requires more space than can be accommodated within the GUI interface.**
-<img src="gui/analysistakingplace.png>
+<img src="gui/analysistakingplace.png">
 
 3. **The user is expected to copy the analysis output from the terminal and paste it into the input field under the `Financial Metrics` section. This will allow the user to visualize a graphical representation of the company's stock analysis, providing deeper insights into the financial performance and key metrics of the company.**
-<img src="gui/pastingoftheanalyticdataofthecompany.png>
+<img src="gui/pastingoftheanalyticdataofthecompany.png">
 
 4. **The application offers four different graphical representation options, enabling users to gain a clearer and more comprehensive understanding of the company's stock performance.**
 <img src="gui/optionsofgraphs.png">
