@@ -243,7 +243,7 @@ link to paper : [https://link.springer.com/chapter/10.1007/978-3-319-05458-2_6](
     In the `if __name__ == "__main__"` block:
     - Creates an instance of `FinancialAnalysisApp` and starts the GUI main loop (`app.mainloop()`), which keeps the application running and responsive to user inputs.
 
-    This code provides a comprehensive GUI for financial analysis using a combination of Python libraries and custom modules. It integrates real-time data processing, asynchronous operations, and interactive visualizations, making it a powerful tool for analyzing financial data and generating insights.
+    **This code provides a comprehensive GUI for financial analysis using a combination of Python libraries and custom modules. It integrates real-time data processing, asynchronous operations, and interactive visualizations, making it a powerful tool for analyzing financial data and generating insights.**
 
 6. Finally we are going to merge all the above functions of the agents, tools and tasks to run the code and the get the final output.
 
