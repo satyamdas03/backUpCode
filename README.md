@@ -411,7 +411,7 @@ The **YahooFinanceNewsTool** is a powerful tool for accessing and utilizing fina
 <img src="gui/piechart.png">
 <img src="gui/histogramchart.png">
 
-5. **Along with all that, the user will also get the recommendation to BUY/DON'T BUY/HOLD the stocks of that particular company. This is done with the help of NLP's sentiment analysis. The final answer will be shown along side the sentiment analysis line chart.**
+5. **Additionally, the application provides a data-driven investment recommendation—BUY, DON'T BUY, or HOLD—based on sentiment analysis powered by advanced Natural Language Processing (NLP) techniques. This recommendation is presented alongside the sentiment analysis line chart, offering users actionable insights into market sentiment. By visualizing sentiment trends and receiving a clear investment recommendation, users can make more informed decisions regarding their stock investments, enhancing their ability to strategically navigate market conditions.**
 <img src="gui/sentimentanalysislinechart.png">
 
 ## SCREENSHOTS OF THE OUTPUTS(provided by our AI)
