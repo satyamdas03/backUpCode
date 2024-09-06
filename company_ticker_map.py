@@ -7,3 +7,6 @@ COMPANY_TO_TICKER_MAP = {
     'tesla': 'TSLA',
     # Add more known mappings
 }
+
+## add web scraping 
+## added web scraping but not working properly
