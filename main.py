@@ -17,17 +17,31 @@ import matplotlib.dates as mdates
 
 load_dotenv()
 
+COMPANY_TO_TICKER_MAP = {
+    'apple': 'AAPL',
+    'microsoft': 'MSFT',
+    'google': 'GOOG',
+    # Add more known mappings
+}
+
+
 def get_ticker_symbol(company_name):
     try:
-        # Use yfinance to search for the ticker symbol directly
-        company = yf.Ticker(company_name)
-        if company.info['symbol']:  # Check if the symbol exists
-            ticker_symbol = company.info['symbol']
+        # First, check if the company name is in the known mapping
+        if company_name.lower() in COMPANY_TO_TICKER_MAP:
+            return COMPANY_TO_TICKER_MAP[company_name.lower()]
+        
+        # Use the download function to check if the company exists by downloading data
+        company_search = yf.Ticker(company_name)
+        if 'symbol' in company_search.info:
+            ticker_symbol = company_search.info['symbol']
             return ticker_symbol
         else:
             raise ValueError(f"No ticker symbol found for {company_name}.")
+    except KeyError:
+        raise ValueError(f"Error retrieving ticker symbol for {company_name}: Ticker data not available.")
     except Exception as e:
-        raise ValueError(f"Error retrieving ticker symbol for {company_name}: {e}")
+        raise ValueError(f"Error retrieving ticker symbol for {company_name}: {str(e)}")
 
 class FinancialCrew:
     def __init__(self, company):
