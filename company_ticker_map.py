@@ -13,7 +13,7 @@ COMPANY_TO_TICKER_MAP = {
     'applied optoelectronics, inc.': 'AAOI',
     'aaon, inc.': 'AAON',
     'advance auto parts, inc.': 'AAP',
-    'apple inc.': 'AAPL',
+    'apple': 'AAPL',
     'american assets trust, inc.': 'AAT',
     'alliancebernstein holding l.p.': 'AB',
     'american battery technology company': 'ABAT',
@@ -497,4 +497,11 @@ COMPANY_TO_TICKER_MAP = {
     'aveanna healthcare holdings inc.': 'AVAH',
     'grupo aval acciones y valores s.a.': 'AVAL',
     'aerovironment, inc.': 'AVAV',
+    'microsoft': 'MSFT',
+    'google': 'GOOG',
+    'amazon': 'AMZN',
+    'facebook': 'META',
+    'tesla': 'TSLA',
+    'solaredge technologies': 'SEDG',
+    'wolfspeed': 'WOLF'
 }
