@@ -17,16 +17,12 @@ import matplotlib.dates as mdates
 
 load_dotenv()
 
-# Function to get the ticker symbol for a given company name
 def get_ticker_symbol(company_name):
-    # Search for the company using yfinance
     try:
-        # Using the Ticker module to get info
-        search_results = yf.Ticker(company_name).info
-        
-        # Retrieve the ticker symbol from the search results
-        ticker_symbol = search_results.get('symbol', None)
-        if ticker_symbol:
+        # Use yfinance to search for the ticker symbol directly
+        company = yf.Ticker(company_name)
+        if company.info['symbol']:  # Check if the symbol exists
+            ticker_symbol = company.info['symbol']
             return ticker_symbol
         else:
             raise ValueError(f"No ticker symbol found for {company_name}.")
@@ -36,6 +32,7 @@ def get_ticker_symbol(company_name):
 class FinancialCrew:
     def __init__(self, company):
         self.company = company
+
 
     def run(self):
         agents = StockAnalysisAgents()
@@ -134,9 +131,15 @@ class FinancialAnalysisApp(ctk.CTk):
     def start_analysis(self):
         company_name = self.company_entry.get().strip()
         if company_name:
-            self.analysis_text.delete("1.0", ctk.END)
-            self.analysis_text.insert(ctk.END, f"Analyzing {company_name}...\n")
-            threading.Thread(target=self.run_analysis, args=(company_name,)).start()
+            try:
+                # Get the ticker symbol using the new function
+                ticker_symbol = get_ticker_symbol(company_name)
+                self.analysis_text.delete("1.0", ctk.END)
+                self.analysis_text.insert(ctk.END, f"Analyzing {company_name} ({ticker_symbol})...\n")
+                threading.Thread(target=self.run_analysis, args=(ticker_symbol,)).start()
+            except ValueError as e:
+                self.analysis_text.delete("1.0", ctk.END)
+                self.analysis_text.insert(ctk.END, str(e))
         else:
             self.analysis_text.delete("1.0", ctk.END)
             self.analysis_text.insert(ctk.END, "Please enter a company name.")
@@ -180,6 +183,7 @@ class FinancialAnalysisApp(ctk.CTk):
             return
 
         try:
+            # Get the ticker symbol using the new function
             ticker_symbol = get_ticker_symbol(company_name)
         except ValueError as e:
             messagebox.showwarning("Error", str(e))
