@@ -13,16 +13,11 @@ import tkinter.messagebox as messagebox  # Import messagebox from tkinter
 import plotly.graph_objs as go
 import plotly.subplots as sp
 import matplotlib.dates as mdates
+from company_ticker_map import COMPANY_TO_TICKER_MAP  # Import the map
 
 
 load_dotenv()
 
-COMPANY_TO_TICKER_MAP = {
-    'apple': 'AAPL',
-    'microsoft': 'MSFT',
-    'google': 'GOOG',
-    # Add more known mappings
-}
 
 
 def get_ticker_symbol(company_name):
