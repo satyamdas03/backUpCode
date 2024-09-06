@@ -504,4 +504,5 @@ COMPANY_TO_TICKER_MAP = {
     'tesla': 'TSLA',
     'solaredge technologies': 'SEDG',
     'wolfspeed': 'WOLF'
+    
 }
