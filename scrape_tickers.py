@@ -16,12 +16,17 @@ soup = BeautifulSoup(response.text, 'html.parser')
 # Dictionary to store company-to-ticker mapping
 COMPANY_TO_TICKER_MAP = {}
 
-# Find the table or container that has the data (for this case, assuming it's in 'a' tags)
-for link in soup.find_all('a', href=True):
-    # Some links might not be valid tickers, so filter out invalid ones
-    if link['href'].startswith('/stocks/') and len(link.text.split()) > 1:
-        ticker_symbol = link['href'].split('/')[-1].upper()  # Extract ticker from href
-        company_name = link.text.lower()  # Convert company name to lowercase
+# Find the table or container that has the data (inspect the page source to find the correct tag and class)
+# Assuming companies are in 'tr' tags with 'td' tags for company and ticker details
+table = soup.find('table')  # Look for the main table
+
+# Loop through all rows in the table
+for row in table.find_all('tr')[1:]:  # Skipping the header
+    columns = row.find_all('td')
+    
+    if len(columns) >= 2:
+        company_name = columns[1].text.strip().lower()  # Column with company name
+        ticker_symbol = columns[0].text.strip().upper()  # Column with ticker symbol
         COMPANY_TO_TICKER_MAP[company_name] = ticker_symbol
 
 # Check some sample data
