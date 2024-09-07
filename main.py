@@ -14,6 +14,7 @@ import plotly.graph_objs as go
 import plotly.subplots as sp
 import matplotlib.dates as mdates
 from company_ticker_map import COMPANY_TO_TICKER_MAP  # Import the map
+# import matplotlib.animation as animation
 
 
 load_dotenv()
@@ -214,9 +215,15 @@ class FinancialAnalysisApp(ctk.CTk):
         self.stop_realtime_prices()
         self.destroy()
 
+    # def on_closing(self):
+    #     self.stop_realtime_prices()  # Stop the thread and fetcher
+    #     plt.close('all')  # Close all Matplotlib figures properly
+    #     self.destroy()
+
 class RealTimeStockPriceFetcher:
     def __init__(self):
         self.running = False
+        # self.anim = None
 
     def fetch_realtime_prices(self, company_name):
         ticker = yf.Ticker(company_name)
@@ -258,8 +265,56 @@ class RealTimeStockPriceFetcher:
             plt.ioff()
             plt.show()
 
+
+
+    # def fetch_realtime_prices(self, company_name):
+    #     ticker = yf.Ticker(company_name)
+    #     try:
+    #         plt.ion()  # Turn on interactive mode
+    #         fig, ax = plt.subplots()
+    #         fig.patch.set_facecolor('#2c2f33')  # Set figure background color
+
+    #         self.running = True
+
+    #         def update(frame):
+    #             if not self.running:
+    #                 return
+
+    #             data = ticker.history(period='7d', interval='1m')
+
+    #             if data.empty:
+    #                 print(f"No price data found for {company_name}, please check the ticker symbol.")
+    #                 return
+
+    #             prices = data['Close']
+    #             ax.clear()
+    #             ax.plot(prices.index, prices.values, color='#1fb453', linewidth=0.5)
+    #             ax.set_facecolor('#1e1e1e')
+    #             ax.set_title(f"Real-Time Price for {company_name}", fontsize=14, color='white')
+    #             ax.set_xlabel("Time", fontsize=12, color='white')
+    #             ax.set_ylabel("Price (USD)", fontsize=12, color='white')
+    #             ax.grid(True, linestyle='--', alpha=0.6)
+    #             plt.setp(ax.get_xticklabels(), rotation=45, ha='right', color='white')
+    #             plt.setp(ax.get_yticklabels(), color='white')
+    #             plt.tight_layout()
+
+    #         # Use animation for real-time updates instead of plt.pause
+    #         self.anim = animation.FuncAnimation(fig, update, interval=60000)
+    #         plt.show()
+
+    #     except Exception as e:
+    #         print(f"Error fetching data: {e}")
+    #     finally:
+    #         plt.ioff()
+
+
     def stop(self):
         self.running = False
+
+    # def stop(self):
+    #     self.running = False
+    #     if self.anim is not None:
+    #         self.anim.event_source.stop()
 
 
 
