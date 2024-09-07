@@ -146,7 +146,6 @@ class FinancialAnalysisApp(ctk.CTk):
         # Canvas for displaying the graph
         self.graph_canvas = None
         self.plot_thread = None
-        # self.fetcher = RealTimeStockPriceFetcher()  # Initialize the RealTimeStockPriceFetcher class
         self.fetcher = RealTimeStockPriceFetcher(self)
 
     def start_analysis(self):
@@ -226,57 +225,6 @@ class FinancialAnalysisApp(ctk.CTk):
         self.stop_realtime_prices()
         self.destroy()
 
-
-# class RealTimeStockPriceFetcher:
-#     def __init__(self):
-#         self.running = False
-
-#     def fetch_realtime_prices(self, company_name):
-#         ticker = yf.Ticker(company_name)
-#         try:
-#             plt.ion()  # Turn on interactive mode
-#             fig, ax = plt.subplots()
-#             fig.patch.set_facecolor('#2c2f33')  # Set figure background color
-
-#             self.running = True
-#             while self.running:
-#                 data = ticker.history(period='7d', interval='1m')
-                
-#                 if data.empty:
-#                     print(f"No price data found for {company_name}, please check the ticker symbol.")
-#                     break
-
-#                 prices = data['Close']
-#                 ax.clear()
-
-#                 ax.plot(prices.index, prices.values, color='#1fb453', linewidth=0.5)
-#                 ax.set_facecolor('#1e1e1e')
-#                 ax.set_title(f"Real-Time Price for {company_name}", fontsize=14, color='white')
-#                 ax.set_xlabel("Time", fontsize=12, color='white')
-#                 ax.set_ylabel("Price (USD)", fontsize=12, color='white')
-#                 ax.grid(True, linestyle='--', alpha=0.6)
-#                 plt.setp(ax.get_xticklabels(), rotation=45, ha='right', color='white')
-#                 plt.setp(ax.get_yticklabels(), color='white')
-
-#                 # Adjust axis margins to remove white space
-#                 plt.subplots_adjust(left=0, bottom=0.2)
-
-#                 plt.tight_layout()
-#                 plt.draw()
-#                 plt.pause(60)
-
-#         except Exception as e:
-#             print(f"Error fetching data: {e}")
-#         finally:
-#             plt.ioff()
-#             plt.show()
-
-
-#     def stop(self):
-#         self.running = False
-
-
-
 class RealTimeStockPriceFetcher:
     def __init__(self, app):
         self.app = app  # Pass the app instance
@@ -329,9 +277,6 @@ class RealTimeStockPriceFetcher:
 
     def stop(self):
         self.running = False
-
-
-
 
 if __name__ == "__main__":
     app = FinancialAnalysisApp()
