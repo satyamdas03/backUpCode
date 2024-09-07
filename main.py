@@ -229,7 +229,6 @@ class FinancialAnalysisApp(ctk.CTk):
 class RealTimeStockPriceFetcher:
     def __init__(self):
         self.running = False
-        # self.anim = None
 
     def fetch_realtime_prices(self, company_name):
         ticker = yf.Ticker(company_name)
