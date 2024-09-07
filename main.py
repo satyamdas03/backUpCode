@@ -131,6 +131,18 @@ class FinancialAnalysisApp(ctk.CTk):
         self.stock_price_button = ctk.CTkButton(self.main_frame, text="Show Real-Time Stock Prices", command=self.show_realtime_prices, width=200, font=("Arial", 14, "bold"))
         self.stock_price_button.grid(row=8, column=0, columnspan=2, pady=(25, 0))
 
+        # Instruction Label for closing the app using Task Manager
+        self.close_instruction_label = ctk.CTkLabel(
+            self.main_frame, 
+            text="*To close the application, press Ctrl + Shift + Esc, open the Task Manager, right-click on the Python GUI, and select 'End Task'.*", 
+            font=("Arial", 12, "italic"),
+            wraplength=300,
+            anchor="center"  # This centers the text within the label
+        )
+        self.close_instruction_label.grid(row=9, column=0, columnspan=2, sticky="ew", pady=(5, 0))
+
+
+
         # Canvas for displaying the graph
         self.graph_canvas = None
         self.plot_thread = None
