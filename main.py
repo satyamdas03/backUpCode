@@ -235,19 +235,48 @@ class RealTimeStockPriceFetcher:
         self.running = True
         self._schedule_update(ticker)
 
+    # def _schedule_update(self, ticker):
+    #     if not self.running:
+    #         return  # If stopped, don't continue
+
+    #     data = ticker.history(period='7d', interval='1m')
+
+    #     if data.empty:
+    #         print(f"No price data found for {ticker.ticker}, please check the ticker symbol.")
+    #         return
+
+    #     prices = data['Close']
+    #     self.app.after(1000, lambda: self._update_plot(prices.index, prices.values, ticker.ticker))
+    #     self.app.after(60000, lambda: self._schedule_update(ticker))  # Schedule the next update in 60 seconds
+
+
     def _schedule_update(self, ticker):
         if not self.running:
             return  # If stopped, don't continue
 
+        # Fetch data for the last 7 days with 1-minute intervals
         data = ticker.history(period='7d', interval='1m')
 
+        # Debug Output: Print or log the fetched data
         if data.empty:
             print(f"No price data found for {ticker.ticker}, please check the ticker symbol.")
             return
+        else:
+            # Print the entire DataFrame for debugging
+            print(f"Fetched data for {ticker.ticker}:")
+            print(data)
 
+            # Print the date range (index of the DataFrame) for further verification
+            print("Data covers the following date range:")
+            print(data.index)
+
+        # Get closing prices for plotting
         prices = data['Close']
+
+        # Update plot and schedule the next update
         self.app.after(1000, lambda: self._update_plot(prices.index, prices.values, ticker.ticker))
         self.app.after(60000, lambda: self._schedule_update(ticker))  # Schedule the next update in 60 seconds
+
 
     def _update_plot(self, times, prices, company_name):
         plt.ion()  # Turn on interactive mode
