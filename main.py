@@ -75,8 +75,15 @@ class FinancialCrew:
         return final_summary
 
 class FinancialAnalysisApp(ctk.CTk):
-    def __init__(self):
+    def __init__(self, master):
         super().__init__()
+        self.master = master
+
+        self.top_button = ctk.CTkButton(master, text="Show Top 10 Stocks", command=self.show_top_10_stocks)
+        self.top_button.pack(pady=10)
+
+        self.worst_button = ctk.CTkButton(master, text="Show Worst 10 Stocks", command=self.show_worst_10_stocks)
+        self.worst_button.pack(pady=10)
 
         self.title("Financial Analysis Terminal")
         self.geometry("530x500")
@@ -142,11 +149,12 @@ class FinancialAnalysisApp(ctk.CTk):
         self.close_instruction_label.grid(row=9, column=0, columnspan=2, sticky="ew", pady=(5, 0))
 
         # trying to fetch real time top 10 and worst 10 stocks
-        self.top_10_button = ctk.CTkButton(self.main_frame, text="Top 10 Stocks", command=self.show_top_10_stocks, width=180, font=("Arial", 14, "bold"))
-        self.top_10_button.grid(row=3, column=0, pady=(10, 0))
+        # Add buttons to show top and worst stocks
+        # self.top_button = ctk.CTkButton(master, text="Show Top 10 Stocks", command=self.show_top_10_stocks)
+        # self.top_button.pack(pady=10)
 
-        self.worst_10_button = ctk.CTkButton(self.main_frame, text="Worst 10 Stocks", command=self.show_worst_10_stocks, width=180, font=("Arial", 14, "bold"))
-        self.worst_10_button.grid(row=3, column=1, pady=(10, 0))
+        # self.worst_button = ctk.CTkButton(master, text="Show Worst 10 Stocks", command=self.show_worst_10_stocks)
+        # self.worst_button.pack(pady=10)
 
 
 
@@ -235,20 +243,37 @@ class FinancialAnalysisApp(ctk.CTk):
 
     #functions for fetching top 10 and worst 10 stocks real time
     def show_top_10_stocks(self):
-        threading.Thread(target=self.fetch_and_display_stocks, args=("top")).start()
+        threading.Thread(target=self.fetch_and_display_stocks, args=("top",)).start()  # Pass "top" as the first argument
     
     def show_worst_10_stocks(self):
-        threading.Thread(target=self.fetch_and_display_stocks, args=("worst")).start()
-    
-    def fetch_and_display_stocks(self, company_name, stock_data = None):
-        if type == "top":
+        threading.Thread(target=self.fetch_and_display_stocks, args=("worst",)).start()  # Pass "worst" as the first argument
+
+    def fetch_and_display_stocks(self, stock_type, stock_data=None):
+        # Check stock_type instead of 'type'
+        if stock_type == "top":
             stocks = self.fetch_top_10_stocks()
         else:
             stocks = self.fetch_worst_10_stocks()
 
+        # Create a new window for the stock list
+        self.display_stock_list_in_new_window(stock_type, stocks)
+
+    def display_stock_list_in_new_window(self, stock_type, stocks):
+        # Create a new Toplevel window (new GUI)
+        new_window = ctk.CTkToplevel(self.master)
+        new_window.title(f"{stock_type.capitalize()} 10 Stocks")
+
+        # Add a label to the new window
+        stock_label = ctk.CTkLabel(new_window, text=f"{stock_type.capitalize()} 10 Stocks", font=("Helvetica", 16))
+        stock_label.pack(pady=10)
+
+        # Create a text box to display the stocks
+        stock_text = ctk.CTkTextbox(new_window, width=400, height=300)
+        stock_text.pack(padx=20, pady=20)
+
+        # Insert the stock list into the text box
         stock_list = "\n".join([f"{i+1}. {stock['name']} | P/E: {stock['pe_ratio']} | Revenue: {stock['revenue']}" for i, stock in enumerate(stocks)])
-        self.analysis_text.delete("1.0", ctk.END)
-        self.analysis_text.insert(ctk.END, f"{type.capitalize()} 10 Stocks:\n\n{stock_list}\n")
+        stock_text.insert(ctk.END, stock_list)
 
     def fetch_top_10_stocks(self):
         # Example logic to fetch top 10 stocks - you can replace it with an actual API or logic.
@@ -355,6 +380,7 @@ class RealTimeStockPriceFetcher:
         self.running = False
 
 if __name__ == "__main__":
-    app = FinancialAnalysisApp()
+    # app = FinancialAnalysisApp()
+    app = FinancialAnalysisApp(master=None)
     app.protocol("WM_DELETE_WINDOW", app.on_closing)  # Handle window closing event
     app.mainloop()
