@@ -141,6 +141,14 @@ class FinancialAnalysisApp(ctk.CTk):
         )
         self.close_instruction_label.grid(row=9, column=0, columnspan=2, sticky="ew", pady=(5, 0))
 
+        # trying to fetch real time top 10 and worst 10 stocks
+        self.top_10_button = ctk.CTkButton(self.main_frame, text="Top 10 Stocks", command=self.show_top_10_stocks, width=180, font=("Arial", 14, "bold"))
+        self.top_10_button.grid(row=3, column=0, pady=(10, 0))
+
+        self.worst_10_button = ctk.CTkButton(self.main_frame, text="Worst 10 Stocks", command=self.show_worst_10_stocks, width=180, font=("Arial", 14, "bold"))
+        self.worst_10_button.grid(row=3, column=1, pady=(10, 0))
+
+
 
 
         # Canvas for displaying the graph
@@ -224,6 +232,41 @@ class FinancialAnalysisApp(ctk.CTk):
     def on_closing(self):
         self.stop_realtime_prices()
         self.destroy()
+
+    #functions for fetching top 10 and worst 10 stocks real time
+    def show_top_10_stocks(self):
+        threading.Thread(target=self.fetch_and_display_stocks, args=("top")).start()
+    
+    def show_worst_10_stocks(self):
+        threading.Thread(target=self.fetch_and_display_stocks, args=("worst")).start()
+    
+    def fetch_and_display_stocks(self, company_name, stock_data = None):
+        if type == "top":
+            stocks = self.fetch_top_10_stocks()
+        else:
+            stocks = self.fetch_worst_10_stocks()
+
+        stock_list = "\n".join([f"{i+1}. {stock['name']} | P/E: {stock['pe_ratio']} | Revenue: {stock['revenue']}" for i, stock in enumerate(stocks)])
+        self.analysis_text.delete("1.0", ctk.END)
+        self.analysis_text.insert(ctk.END, f"{type.capitalize()} 10 Stocks:\n\n{stock_list}\n")
+
+    def fetch_top_10_stocks(self):
+        # Example logic to fetch top 10 stocks - you can replace it with an actual API or logic.
+        top_10 = [
+            {"name": "Apple", "pe_ratio": 32.50, "revenue": "394.3B"},
+            {"name": "Microsoft", "pe_ratio": 37.20, "revenue": "184.9B"},
+            # ... Add other stocks
+        ]
+        return top_10
+
+    def fetch_worst_10_stocks(self):
+        # Example logic to fetch worst 10 stocks - you can replace it with an actual API or logic.
+        worst_10 = [
+            {"name": "ABC Corp", "pe_ratio": 4.20, "revenue": "2.3B"},
+            {"name": "XYZ Inc", "pe_ratio": 5.00, "revenue": "1.5B"},
+            # ... Add other stocks
+        ]
+        return worst_10
 
 class RealTimeStockPriceFetcher:
     def __init__(self, app):
