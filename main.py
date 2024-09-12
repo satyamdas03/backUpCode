@@ -86,7 +86,7 @@ class FinancialAnalysisApp(ctk.CTk):
         self.worst_button.pack(pady=10)
 
         self.title("Financial Analysis Terminal")
-        self.geometry("530x500")
+        self.geometry("530x600")
         self.resizable(False, False)  # Prevent window resizing
 
         # Set up main frame
