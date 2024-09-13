@@ -16,6 +16,10 @@ import matplotlib.dates as mdates
 from company_ticker_map import COMPANY_TO_TICKER_MAP  # Import the map
 import pandas as pd
 from yahoo_fin import stock_info as si
+# from requests_html import HTMLSession
+import requests
+from bs4 import BeautifulSoup
+
 
 load_dotenv()
 
@@ -293,12 +297,34 @@ class FinancialAnalysisApp(ctk.CTk):
         # Return the top 10 stocks
         return sorted_stocks[:10]
     
+    # def get_most_active_stocks(self):
+    #     # Fetch the most active stocks from Yahoo Finance
+    #     most_active = si.get_day_most_active()
+    #     # Return the top 10 tickers
+    #     top_10_tickers = most_active['Symbol'].head(10).tolist()
+    #     return top_10_tickers
+
     def get_most_active_stocks(self):
-        # Fetch the most active stocks from Yahoo Finance
-        most_active = si.get_day_most_active()
-        # Return the top 10 tickers
-        top_10_tickers = most_active['Symbol'].head(10).tolist()
-        return top_10_tickers
+        url = "https://finance.yahoo.com/most-active?offset=0&count=10"
+        response = requests.get(url)
+        
+        if response.status_code != 200:
+            raise Exception("Failed to fetch data from Yahoo Finance.")
+        
+        # Use BeautifulSoup to parse the HTML response
+        soup = BeautifulSoup(response.text, 'html.parser')
+        
+        # Find the table rows containing the stock data
+        stock_rows = soup.find_all('tr', attrs={'class': 'simpTblRow'})
+        
+        most_active_tickers = []
+        
+        for row in stock_rows:
+            # Extract the stock ticker from the first column
+            ticker = row.find('td', attrs={'aria-label': 'Symbol'}).text
+            most_active_tickers.append(ticker)
+        
+        return most_active_tickers[:10]  # Return the top 10 tickers
 
     def get_stock_info(self, ticker):
         stock = yf.Ticker(ticker)
