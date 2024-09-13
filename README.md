@@ -256,6 +256,13 @@ link to paper : [https://link.springer.com/chapter/10.1007/978-3-319-05458-2_6](
     4. **Scheduling the updates**: `_schedule_update` First, it checks if the process is still running by looking at the `self.running` flag. If it is False, it stops further updates. It fetches the stock price history for the last 7 days, with a 1-minute interval, using `ticker.history()`. This retrieves high-frequency price data. If the data is empty, it prints a message warning the user that no data was found, and the function exits. If there is valid data, it extracts the closing prices. It then schedules two things: After 1 second, the plot will be updated with the latest price data. After 60 seconds, the function itself will be called again to fetch the most recent data, creating a continuous update cycle.
     5. **updating the plot**: `_update_plot` function updates the real-time price plot with new price data and embeds it into the `Tkinter` GUI. It turns on interactive mode (`plt.ion()`), allowing the plot to update in real-time without blocking the rest of the program. A new figure (`fig`) and axes (`ax`) are created using plt.subplots(), and the figure’s background color is set. The axes are cleared to avoid overwriting previous plots. The stock price data is plotted against the time data with specific styling for the line color and width. Titles, axis labels, and grid lines are added with specific formatting (e.g., white text color, rotation of tick labels). The figure and axes are embedded into the `Tkinter` GUI using the FigureCanvasTkAgg class from `matplotlib.backends`.`backend_tkagg`. The plot is drawn (`plt.draw()`), and then the program pauses for 60 seconds before continuing, which helps avoid immediate redraws and updates the plot only at set intervals.
 
+    ### Visual Representation of the updated GUI (the original version gui is shown towards the end of the readme)
+    #### New Look of the GUI
+    <img src="gui/guinewlook.png">
+
+    #### Output demo of the new feature
+    <img src="gui/demooutputofthenewfeature.png">
+
     #### Functionality Overview
     1. **User Inputs Company Name:**
     - The user enters a company name in the input field and clicks the `Analyze` button.
@@ -432,7 +439,7 @@ link to paper : [https://link.springer.com/chapter/10.1007/978-3-319-05458-2_6](
 The **YahooFinanceNewsTool** is a powerful tool for accessing and utilizing financial news data from Yahoo Finance. By integrating it into your financial analysis workflows, you can enhance your ability to make informed decisions based on the latest market information. Proper configuration, understanding of its features, and adherence to usage guidelines will maximize the effectiveness of this tool in your financial analysis projects.
 
 
-## SCREENSHOTS OF THE GUI and the steps of using it
+## SCREENSHOTS OF THE GUI and the steps of using it [ ORIGINAL VERSION ]
 1. **by running `py main.py` in the terminal, the following gui will appear**
 <img src="gui/basicguiscreenshot.png">
 
