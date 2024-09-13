@@ -14,6 +14,8 @@ import plotly.graph_objs as go
 import plotly.subplots as sp
 import matplotlib.dates as mdates
 from company_ticker_map import COMPANY_TO_TICKER_MAP  # Import the map
+import pandas as pd
+from yahoo_fin import stock_info as si
 
 load_dotenv()
 
@@ -277,13 +279,42 @@ class FinancialAnalysisApp(ctk.CTk):
         stock_text.insert(ctk.END, stock_list)
 
     def fetch_top_10_stocks(self):
-        # Example logic to fetch top 10 stocks - you can replace it with an actual API or logic.
-        top_10 = [
-            {"name": "Apple", "pe_ratio": 32.50, "revenue": "394.3B"},
-            {"name": "Microsoft", "pe_ratio": 37.20, "revenue": "184.9B"},
-            # ... Add other stocks
-        ]
-        return top_10
+        # Fetch top 10 most active stock tickers dynamically from Yahoo Finance
+        top_10_tickers = self.get_most_active_stocks()
+
+        stock_data = []
+        for ticker in top_10_tickers:
+            stock_info = self.get_stock_info(ticker)
+            stock_data.append(stock_info)
+
+        # Sort the stocks by P/E ratio or any other criteria (ascending P/E in this case)
+        sorted_stocks = sorted(stock_data, key=lambda x: x["pe_ratio"] if x["pe_ratio"] != "N/A" else float('inf'))
+
+        # Return the top 10 stocks
+        return sorted_stocks[:10]
+    
+    def get_most_active_stocks(self):
+        # Fetch the most active stocks from Yahoo Finance
+        most_active = si.get_day_most_active()
+        # Return the top 10 tickers
+        top_10_tickers = most_active['Symbol'].head(10).tolist()
+        return top_10_tickers
+
+    def get_stock_info(self, ticker):
+        stock = yf.Ticker(ticker)
+        info = stock.info
+
+        # Fetch P/E ratio and revenue
+        pe_ratio = info.get("forwardPE") or info.get("trailingPE", "N/A")
+        revenue = info.get("totalRevenue", "N/A")
+
+        stock_info = {
+            "name": info.get("shortName", ticker),
+            "pe_ratio": pe_ratio,
+            "revenue": f"{revenue / 1e9:.2f}B" if revenue != "N/A" else "N/A"
+        }
+
+        return stock_info
 
     def fetch_worst_10_stocks(self):
         # Example logic to fetch worst 10 stocks - you can replace it with an actual API or logic.
