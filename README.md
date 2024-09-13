@@ -150,7 +150,189 @@ link to paper : [https://link.springer.com/chapter/10.1007/978-3-319-05458-2_6](
     -*The Filings Analysis*: to analyze the latest filings
     -*The Recommend Task*: to review and synthesize the analysis provided by the financial and research analysts
 
-5. Finally we are going to merge all the above functions of the agents, tools and tasks to run the code and the get the final output.
+5. The code in main.py is Python application creates a graphical user interface (GUI) for financial analysis using the `customtkinter` library. The application allows users to input a company name, analyze its financial data, and visualize the results through various types of charts (e.g., bar charts, pie charts, histograms, and sentiment line charts).
+
+    ### Key Components of the Code
+
+    #### Libraries and Modules
+
+    - **customtkinter as ctk**: A modernized version of the Tkinter library, used to create the GUI.
+    - **threading**: Allows for running functions in separate threads, enabling asynchronous operations (like fetching financial data).
+    - **matplotlib.pyplot and FigureCanvasTkAgg**: Used to create and display graphs within the GUI.
+    - **Crew, StockAnalysisAgents, StockAnalysisTasks**: Modules related to a custom financial analysis library named `crewAI`.
+    - **dotenv**: Used to load environment variables from a `.env` file.
+    - **parse_input**: A function from a custom module `graph_ai.py` that processes user input for generating graphs.
+
+    #### Classes
+
+    1. **FinancialCrew**: Handles the financial analysis logic. It initializes with a company name and runs a series of tasks to gather financial data and provide a summary.
+    2. **FinancialAnalysisApp**: The main GUI application class, inheriting from `ctk.CTk` (a custom Tkinter class). This class sets up the GUI layout, handles user interactions, and integrates the analysis logic provided by the `FinancialCrew` class.
+
+    ### Detailed Explanation of the Code
+
+    #### FinancialCrew Class
+
+    ##### `__init__` Method
+
+    - Initializes the class with a `company` parameter, storing the company name for analysis.
+
+    ##### `run` Method
+
+    - Initializes agents and tasks using `StockAnalysisAgents` and `StockAnalysisTasks`.
+    - Configures different agents for research, financial analysis, filings analysis, and investment recommendations.
+    - Creates a `Crew` instance with these agents and tasks, then starts the analysis with `crew.kickoff()`.
+    - Returns the final summary of the analysis as a string.
+
+    #### FinancialAnalysisApp Class
+
+    ##### `__init__` Method
+
+    - Initializes the GUI window with a title and fixed size.
+    - Creates a main frame to contain all widgets and sets up a grid layout.
+    - Adds a label and entry box for the user to input a company name.
+    - Adds buttons for starting the analysis and generating graphs.
+    - Adds textboxes for displaying analysis results and financial metrics.
+    - Adds a dropdown menu for selecting the type of graph to generate.
+    - Prepares a placeholder (`graph_canvas`) for displaying the generated graph.
+
+    ##### `start_analysis` Method
+
+    - Retrieves the company name from the entry box and starts the analysis in a new thread to avoid blocking the main GUI thread.
+    - If the input is valid, it clears the analysis text box and shows a message that the analysis has started.
+    - If no company name is entered, it prompts the user to enter one.
+
+    ##### `run_analysis` Method
+
+    - Runs the analysis by creating an instance of `FinancialCrew` with the provided company name.
+    - Retrieves the analysis summary and displays it in the analysis text box.
+
+    ##### `generate_graph` Method
+
+    - Retrieves the user input from the financial metrics textbox.
+    - Checks the selected graph type from the dropdown menu.
+    - Calls the `parse_input` function (assumed to process input and generate recommendations for graphs).
+    - Displays the generated graph and any recommendations.
+
+    ##### `display_graph` Method
+
+    - If a graph canvas already exists, it is destroyed to prevent overlapping graphs.
+    - Retrieves the current matplotlib figure and displays it in a new window using `FigureCanvasTkAgg`.
+    - If a recommendation is provided, it is displayed as a label in the new window.
+    - Closes the matplotlib figure after rendering to avoid duplication.
+
+    ### Functionality Overview
+
+    1. **User Inputs Company Name**:
+    - The user enters a company name in the input field and clicks the "Analyze" button.
+    - The application starts a separate thread to analyze the company's financial data using the `FinancialCrew` class.
+
+    2. **Financial Analysis**:
+    - The `FinancialCrew` class orchestrates the analysis using various agents and tasks, producing a final summary.
+    - The result is displayed in a text box within the GUI.
+
+    3. **User Inputs Financial Metrics**:
+    - The user can enter custom financial metrics in another input field and select the type of graph they want to generate.
+    - After clicking "Generate Graph," the application uses the `parse_input` function to process the metrics and generate the desired graph.
+
+    4. **Graph Display**:
+    - The application displays the graph in a new window within the GUI.
+    - If there are any recommendations or insights related to the graph, they are also displayed.
+
+    ### Main Program Execution
+
+    In the `if __name__ == "__main__"` block:
+    - Creates an instance of `FinancialAnalysisApp` and starts the GUI main loop (`app.mainloop()`), which keeps the application running and responsive to user inputs.
+
+    **This code provides a comprehensive GUI for financial analysis using a combination of Python libraries and custom modules. It integrates real-time data processing, asynchronous operations, and interactive visualizations, making it a powerful tool for analyzing financial data and generating insights.**
+
+6. The code in the graph_ai.py is the Python script is designed to perform financial sentiment analysis and visualize financial metrics using different types of charts. It leverages the VADER (Valence Aware Dictionary and sEntiment Reasoner) sentiment analysis tool from the `nltk` library to analyze financial news or text, extract key financial metrics, and visualize data in various chart formats.
+
+    ### Key Components of the Code
+
+    #### Libraries and Modules
+    - **nltk.sentiment.vader.SentimentIntensityAnalyzer**: A tool for analyzing the sentiment of sentences. It calculates positive, negative, neutral, and compound sentiment scores.
+    - **matplotlib.pyplot** and **seaborn**: Libraries for creating and customizing charts and plots.
+    - **nltk**: Natural Language Toolkit used for text processing and tokenization.
+    - **re**: Regular expression library used for extracting numerical values from text.
+
+    ### Detailed Explanation of the Code
+
+    1. **Setup and Initialization**
+    ```python
+    nltk.download('punkt')
+    nltk.download('vader_lexicon')
+    ```
+    - Downloads the necessary data files for sentence tokenization and the VADER lexicon required for sentiment analysis.
+    ```python
+    sid = SentimentIntensityAnalyzer()
+    data = {}
+    ```
+    - Initializes the SentimentIntensityAnalyzer and an empty dictionary data to store financial metrics.
+    2. **Function Definitions**
+    ```python
+    parse_input(text, graph_type)
+    ```
+    - Purpose: This function determines the type of analysis to perform based on the `graph_type` parameter. It either calls `parse_news_input` for sentiment analysis or `parse_financial_metrics` for financial data extraction.
+    ```python
+    parse_news_input(text, graph_type)
+    ```
+    - Purpose: Analyzes the sentiment of the input text (financial news or articles).
+    - Process:
+        - Tokenizes the text into sentences using `sent_tokenize()`.
+        - Calculates the sentiment score for each sentence using VADER's `polarity_scores()` method and stores the compound sentiment scores.
+        - Calculates the overall sentiment as the average of all compound scores.
+        - If the `graph_type` is "Sentiment Line Chart," it calls `create_sentiment_line_chart()` to visualize the sentiment over time.
+    ```python
+    parse_financial_metrics(text, graph_type)
+    ```
+    - Purpose: Extracts various financial metrics from the input text.
+    - Process:
+        - Defines a dictionary of financial metrics to extract.
+        - Tokenizes the text into sentences
+        - Uses regular expressions to search for metric values in each sentence.
+        - Populates the `metrics` dictionary with the extracted values.
+        - Updates the global `data` dictionary with the extracted metrics.
+        - Calls the appropriate chart creation function (`create_bar_chart()`, `create_pie_chart()`, or `create_histogram()`) based on graph_type.
+    ```python
+    create_bar_chart()
+    create_pie_chart()
+    create_histogram()
+    ```
+    - Purpose: These functions generate different types of charts to visualize the extracted financial metrics.
+    - Process:
+        - Bar Chart: Uses Seaborn to create a bar plot showing the value of each financial metric.
+        - Pie Chart: Creates a pie chart that represents the proportion of each financial metric.
+        - Histogram: Displays the distribution of the metric values using a histogram.
+     ```python
+     create_sentiment_line_chart(sentiment_scores, overall_sentiment)
+    ```
+    - Purpose: Visualizes the sentiment scores over time.
+    - Process:
+        - Plots the sentiment scores of sentences over time using a line chart.
+        - Adds a neutral line (sentiment = 0) to help differentiate between positive and negative sentiment.
+        - Provides a recommendation ("BUY", "DON'T BUY", "HOLD/RE-EVALUATE") based on the overall sentiment:
+            - **BUY**: if the average sentiment score is significantly positive.
+            - **DON'T BUY**: if the average sentiment score is significantly negative.
+            - **HOLD/RE-EVALUATE**: if the average sentiment score is neutral.
+    3. **Key Functionalities**
+    - Sentiment Analysis: Determines the sentiment of financial news, which can help in making investment decisions.
+    - Financial Metrics Extraction: Extracts and analyzes various key financial metrics from textual data.
+    - Data Visualization: Provides graphical representations of the sentiment and financial metrics, making it easier to interpret the data.
+
+    ### How the Code Works
+    1. **User Input**: The user provides text data (financial news or a report) and selects a type of graph to visualize.
+    2. **Analysis**:
+        - If sentiment analysis is selected, the code performs sentiment analysis and visualizes the results in a line chart.
+        - If financial metrics analysis is selected, the code extracts key financial metrics from the text and visualizes the results in the    selected chart type.
+    3. **Visualization**: Based on the user's selection, the application displays the appropriate chart, helping the user make informed decisions based on sentiment or financial data.
+
+    ### Usage Scenarios
+    1. **Sentiment Analysis**: For analyzing the tone of financial news to gauge market sentiment.
+    2. **Financial Metrics Visualization**: To visualize and compare financial metrics of companies from financial reports.
+
+    **This script is useful for both financial analysts and casual investors who want to automate the process of sentiment analysis and financial metrics visualization. The tool provides both sentiment insights and key financial metrics in a visual format that is easy to understand.**
+
+7. Finally we are going to merge all the above functions of the agents, tools and tasks to run the code and the get the final output.
 
 ## Explanation of the APIs used, and their roles
 
@@ -212,6 +394,25 @@ link to paper : [https://link.springer.com/chapter/10.1007/978-3-319-05458-2_6](
    
 The **YahooFinanceNewsTool** is a powerful tool for accessing and utilizing financial news data from Yahoo Finance. By integrating it into your financial analysis workflows, you can enhance your ability to make informed decisions based on the latest market information. Proper configuration, understanding of its features, and adherence to usage guidelines will maximize the effectiveness of this tool in your financial analysis projects.
 
+
+## SCREENSHOTS OF THE GUI and the steps of using it
+1. **by running `py main.py` in the terminal, the following gui will appear**
+<img src="gui/basicguiscreenshot.png">
+
+2. **The user should enter the company name in the provided input field and then click the `Analyze` button to initiate the stock analysis for the specified company. The analysis will be performed in the terminal, as it involves a comprehensive and detailed process that requires more space than can be accommodated within the GUI interface.**
+<img src="gui/analysistakingplace.png">
+
+3. **The user is expected to copy the analysis output from the terminal and paste it into the input field under the `Financial Metrics` section. This will allow the user to visualize a graphical representation of the company's stock analysis, providing deeper insights into the financial performance and key metrics of the company.**
+<img src="gui/pastingoftheanalyticdataofthecompany.png">
+
+4. **The application offers four different graphical representation options, enabling users to gain a clearer and more comprehensive understanding of the company's stock performance.**
+<img src="gui/optionsofgraphs.png">
+<img src="gui/barchart.png">
+<img src="gui/piechart.png">
+<img src="gui/histogramchart.png">
+
+5. **Additionally, the application provides a data-driven investment recommendation—BUY, DON'T BUY, or HOLD—based on sentiment analysis powered by advanced Natural Language Processing (NLP) techniques. This recommendation is presented alongside the sentiment analysis line chart, offering users actionable insights into market sentiment. By visualizing sentiment trends and receiving a clear investment recommendation, users can make more informed decisions regarding their stock investments, enhancing their ability to strategically navigate market conditions.**
+<img src="gui/sentimentanalysislinechart.png">
 
 ## SCREENSHOTS OF THE OUTPUTS(provided by our AI)
 <img src="outputs/ouptut1.png">
