@@ -79,14 +79,15 @@ class FinancialAnalysisApp(ctk.CTk):
         super().__init__()
         self.master = master
 
-        self.top_button = ctk.CTkButton(master, text="Show Top 10 Stocks", command=self.show_top_10_stocks)
+
+        self.top_button = ctk.CTkButton(master, text="Top 10 stocks to Buy", command=self.show_top_10_stocks, font=("Arial", 14, "bold"))
         self.top_button.pack(pady=10)
 
-        self.worst_button = ctk.CTkButton(master, text="Show Worst 10 Stocks", command=self.show_worst_10_stocks)
-        self.worst_button.pack(pady=10)
+        # self.worst_button = ctk.CTkButton(master, text="Show Worst 10 Stocks", command=self.show_worst_10_stocks)
+        # self.worst_button.pack(pady=10)
 
         self.title("Financial Analysis Terminal")
-        self.geometry("530x600")
+        self.geometry("530x550")
         self.resizable(False, False)  # Prevent window resizing
 
         # Set up main frame
