@@ -238,6 +238,40 @@ link to paper : [https://link.springer.com/chapter/10.1007/978-3-319-05458-2_6](
     - The application displays the graph in a new window within the GUI.
     - If there are any recommendations or insights related to the graph, they are also displayed.
 
+    ### New Feature: Real-Time Stock Prices
+    The application now includes a feature to display real-time stock prices for the company being analyzed. The stock price is fetched using the yfinance library, and it is displayed using a dynamic graph from plotly.
+
+    1. **`get_ticker_symbol` Function**
+    - *Purpose*: Retrieves the ticker symbol for the given company name. It first checks a pre-existing dictionary `COMPANY_TO_TICKER_MAP`, and if the company is not found, it fetches the ticker symbol using `yfinance`.
+    - *Error Handling*: The function raises exceptions if the company’s ticker symbol cannot be retrieved.
+
+    2. **Classes**
+    - **FinancialCrew**: Handles the financial analysis logic, initializing with a company name and running a series of tasks to gather financial data, provide a summary, and now includes fetching the real-time stock prices.
+    - **FinancialAnalysisApp**: The main GUI application class, inheriting from `ctk.CTk` (a custom Tkinter class). This class sets up the GUI layout, handles user interactions, integrates the financial analysis logic from the `FinancialCrew` class, and displays real-time stock prices.
+
+    #### New Methods for Real-Time Stock Prices
+    1. **Stock Price Visualization**: A feature is added to visualize the real-time stock prices using the `plotly` library. The prices are fetched using `yfinance`, and the graph is updated periodically to reflect real-time data.
+    2. **Ticker Symbol Retrieval**: The `get_ticker_symbol` function fetches the corresponding stock ticker for the given company name.
+
+    #### Functionality Overview
+    1. **User Inputs Company Name:**
+    - The user enters a company name in the input field and clicks the `Analyze` button.
+    - The application starts a separate thread to analyze the company’s financial data using the `FinancialCrew` class.
+    2. **Real-Time Stock Prices:**
+    - After analysis, the app fetches and displays real-time stock prices using the `yfinance` library.
+    - The data is visualized in an interactive chart using the plotly library, which updates periodically.
+    3. **Financial Analysis:**
+    - The `FinancialCrew` class orchestrates the analysis using various agents and tasks, producing a final summary.
+    - The result is displayed in a text box within the GUI.
+    4. **User Inputs Financial Metrics:**
+    - The user can enter custom financial metrics and select a graph type.
+    - After clicking `Generate Graph` the app uses the parse_input function to generate and display the graph.
+    5. **Graph Display:**
+    - The graph is displayed dynamically, with recommendations shown alongside it.
+
+
+
+
     ### Main Program Execution
 
     In the `if __name__ == "__main__"` block:
