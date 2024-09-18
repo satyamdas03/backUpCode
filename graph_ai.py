@@ -75,139 +75,139 @@ def parse_financial_metrics(text, graph_type):
         if "P/E ratio" in sentence or "Price-to-Earnings" in sentence:
             match = re.search(r"\b\d+(\.\d+)?", sentence)
             if match:
-                metrics["Price-to-Earnings (P/E) Ratio"] = float(match.group())
+                metrics["Price-to-Earnings (P/E) Ratio"] = float(match.group()) # type: ignore
         
         # Debt Ratio
         if "Debt ratio" in sentence:
             match = re.search(r"\b\d+(\.\d+)?", sentence)
             if match:
-                metrics["Debt Ratio"] = float(match.group())
+                metrics["Debt Ratio"] = float(match.group()) # type: ignore
         
         # Book Value per Share
         if "Book value per share" in sentence:
             match = re.search(r"\b\d+(\.\d+)?", sentence)
             if match:
-                metrics["Book Value per Share"] = float(match.group())
+                metrics["Book Value per Share"] = float(match.group()) # type: ignore
         
         # Earnings Per Share (EPS)
         if "EPS" in sentence or "Earnings per share" in sentence:
             match = re.search(r"\b\d+(\.\d+)?", sentence)
             if match:
-                metrics["Earnings Per Share (EPS)"] = float(match.group())
+                metrics["Earnings Per Share (EPS)"] = float(match.group()) # type: ignore
         
         # Current Ratio
         if "Current ratio" in sentence:
             match = re.search(r"\b\d+(\.\d+)?", sentence)
             if match:
-                metrics["Current Ratio"] = float(match.group())
+                metrics["Current Ratio"] = float(match.group()) # type: ignore
         
         # Return on Equity (ROE)
         if "Return on equity" in sentence or "ROE" in sentence:
             match = re.search(r"\b\d+(\.\d+)?", sentence)
             if match:
-                metrics["Return on Equity (ROE)"] = float(match.group())
+                metrics["Return on Equity (ROE)"] = float(match.group()) # type: ignore
         
         # P/E Growth (PEG) Ratio
         if "PEG ratio" in sentence or "P/E Growth" in sentence:
             match = re.search(r"\b\d+(\.\d+)?", sentence)
             if match:
-                metrics["P/E Growth (PEG) Ratio"] = float(match.group())
+                metrics["P/E Growth (PEG) Ratio"] = float(match.group()) # type: ignore
         
         # Lost Sales Ratio
         if "Lost sales ratio" in sentence:
             match = re.search(r"\b\d+(\.\d+)?", sentence)
             if match:
-                metrics["Lost Sales Ratio"] = float(match.group())
+                metrics["Lost Sales Ratio"] = float(match.group()) # type: ignore
         
         # Dividend Yield
         if "Dividend yield" in sentence:
             match = re.search(r"\b\d+(\.\d+)?%", sentence)
             if match:
-                metrics["Dividend Yield"] = float(match.group().replace('%', ''))
+                metrics["Dividend Yield"] = float(match.group().replace('%', '')) # type: ignore
         
         # Free Cash Flow
         if "Free cash flow" in sentence:
             match = re.search(r"\b\d+(\.\d+)?", sentence)
             if match:
-                metrics["Free Cash Flow"] = float(match.group())
+                metrics["Free Cash Flow"] = float(match.group()) # type: ignore
         
         # Gross Margin
         if "Gross margin" in sentence:
             match = re.search(r"\b\d+(\.\d+)?%", sentence)
             if match:
-                metrics["Gross Margin"] = float(match.group().replace('%', ''))
+                metrics["Gross Margin"] = float(match.group().replace('%', '')) # type: ignore
         
         # Operating Margin
         if "Operating margin" in sentence:
             match = re.search(r"\b\d+(\.\d+)?%", sentence)
             if match:
-                metrics["Operating Margin"] = float(match.group().replace('%', ''))
+                metrics["Operating Margin"] = float(match.group().replace('%', '')) # type: ignore
         
         # Net Profit Margin
         if "Net profit" in sentence or "Net profit margin" in sentence:
             match = re.search(r"\b\d+(\.\d+)?%", sentence)
             if match:
-                metrics["Net Profit Margin"] = float(match.group().replace('%', ''))
+                metrics["Net Profit Margin"] = float(match.group().replace('%', '')) # type: ignore
         
         # Quick Ratio
         if "Quick ratio" in sentence:
             match = re.search(r"\b\d+(\.\d+)?", sentence)
             if match:
-                metrics["Quick Ratio"] = float(match.group())
+                metrics["Quick Ratio"] = float(match.group()) # type: ignore
         
         # Revenue
         if "Revenue" in sentence:
             match = re.search(r"\b\d+(\.\d+)?", sentence)
             if match:
-                metrics["Revenue"] = float(match.group())
+                metrics["Revenue"] = float(match.group()) # type: ignore
         
         # CAGR (Compound Annual Growth Rate)
         if "CAGR" in sentence:
             match = re.search(r"\b\d+(\.\d+)?%", sentence)
             if match:
-                metrics["CAGR (Compound Annual Growth Rate)"] = float(match.group().replace('%', ''))
+                metrics["CAGR (Compound Annual Growth Rate)"] = float(match.group().replace('%', '')) # type: ignore
         
         # Capital Ratios
         if "Capital ratio" in sentence:
             match = re.search(r"\b\d+(\.\d+)?", sentence)
             if match:
-                metrics["Capital Ratios"] = float(match.group())
+                metrics["Capital Ratios"] = float(match.group()) # type: ignore
         
         # Cash Ratio
         if "Cash ratio" in sentence:
             match = re.search(r"\b\d+(\.\d+)?", sentence)
             if match:
-                metrics["Cash Ratio"] = float(match.group())
+                metrics["Cash Ratio"] = float(match.group()) # type: ignore
         
         # Inventory Turnover
         if "Inventory turnover" in sentence:
             match = re.search(r"\b\d+(\.\d+)?", sentence)
             if match:
-                metrics["Inventory Turnover"] = float(match.group())
+                metrics["Inventory Turnover"] = float(match.group()) # type: ignore
         
         # Liquidity Ratio
         if "Liquidity" in sentence:
             match = re.search(r"\b\d+(\.\d+)?", sentence)
             if match:
-                metrics["Liquidity Ratio"] = float(match.group())
+                metrics["Liquidity Ratio"] = float(match.group()) # type: ignore
         
         # Rate of Return
         if "Rate of return" in sentence:
             match = re.search(r"\b\d+(\.\d+)?%", sentence)
             if match:
-                metrics["Rate of Return"] = float(match.group().replace('%', ''))
+                metrics["Rate of Return"] = float(match.group().replace('%', '')) # type: ignore
         
         # Revenue Per Employee
         if "Revenue per employee" in sentence:
             match = re.search(r"\b\d+(\.\d+)?", sentence)
             if match:
-                metrics["Revenue Per Employee"] = float(match.group())
+                metrics["Revenue Per Employee"] = float(match.group()) # type: ignore
         
         # The Bottom Line
         if "The bottom line" in sentence:
             match = re.search(r"\b\d+(\.\d+)?", sentence)
             if match:
-                metrics["The Bottom Line"] = float(match.group())
+                metrics["The Bottom Line"] = float(match.group()) # type: ignore
 
     data = {key: value for key, value in metrics.items() if value is not None}
     

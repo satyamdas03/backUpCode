@@ -10,4 +10,4 @@ class CalculatorTools():
     The input to this tool should be a mathematical 
     expression, a couple examples are `200*7` or `5000/2*10`
     """
-    return eval(operation)
+    return eval(operation) # type: ignore

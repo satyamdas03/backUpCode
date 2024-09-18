@@ -77,7 +77,7 @@ class FinancialCrew:
         )
 
         result = crew.kickoff()
-        final_summary = result.get("final_summary", "Summary not found")  # Modify the key as per your actual structure
+        final_summary = result.get("final_summary", "Summary not found")  # type: ignore # Modify the key as per your actual structure
         return final_summary
 
 class FinancialAnalysisApp(ctk.CTk):

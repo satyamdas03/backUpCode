@@ -21,7 +21,7 @@ COMPANY_TO_TICKER_MAP = {}
 table = soup.find('table')  # Look for the main table
 
 # Loop through all rows in the table
-for row in table.find_all('tr')[1:]:  # Skipping the header
+for row in table.find_all('tr')[1:]:  # type: ignore # Skipping the header
     columns = row.find_all('td')
     
     if len(columns) >= 2:
