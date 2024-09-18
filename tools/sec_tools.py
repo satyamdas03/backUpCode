@@ -71,7 +71,7 @@ class SECTools():
     answer = SECTools.__embedding_search(link, ask)
     return answer
 
-  def __embedding_search(url, ask):
+  def __embedding_search(url, ask): # type: ignore
     text = SECTools.__download_form_html(url)
     elements = partition_html(text=text)
     content = "\n".join([str(el) for el in elements])
