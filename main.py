@@ -19,6 +19,8 @@ from yahoo_fin import stock_info as si
 # from requests_html import HTMLSession
 import requests
 from bs4 import BeautifulSoup
+from yahooquery import Screener
+import time
 
 
 load_dotenv()
@@ -265,6 +267,7 @@ class FinancialAnalysisApp(ctk.CTk):
         # Create a new window for the stock list
         self.display_stock_list_in_new_window(stock_type, stocks)
 
+    
     def display_stock_list_in_new_window(self, stock_type, stocks):
         # Create a new Toplevel window (new GUI)
         new_window = ctk.CTkToplevel(self.master)
@@ -297,12 +300,6 @@ class FinancialAnalysisApp(ctk.CTk):
         # Return the top 10 stocks
         return sorted_stocks[:10]
     
-    # def get_most_active_stocks(self):
-    #     # Fetch the most active stocks from Yahoo Finance
-    #     most_active = si.get_day_most_active()
-    #     # Return the top 10 tickers
-    #     top_10_tickers = most_active['Symbol'].head(10).tolist()
-    #     return top_10_tickers
 
     def get_most_active_stocks(self):
         url = "https://finance.yahoo.com/most-active?offset=0&count=10"
@@ -341,6 +338,8 @@ class FinancialAnalysisApp(ctk.CTk):
         }
 
         return stock_info
+
+
 
     def fetch_worst_10_stocks(self):
         # Example logic to fetch worst 10 stocks - you can replace it with an actual API or logic.
@@ -442,3 +441,517 @@ if __name__ == "__main__":
     app = FinancialAnalysisApp(master=None)
     app.protocol("WM_DELETE_WINDOW", app.on_closing)  # Handle window closing event
     app.mainloop()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# import customtkinter as ctk
+# import threading
+# import matplotlib.pyplot as plt
+# from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+# import yfinance as yf
+# import time
+# from crewai import Crew
+# from stock_analysis_agents import StockAnalysisAgents
+# from stock_analysis_tasks import StockAnalysisTasks
+# from dotenv import load_dotenv
+# from graph_ai import parse_input  # Import the parse_input function from graph_ai.py
+# import tkinter.messagebox as messagebox  # Import messagebox from tkinter
+# import plotly.graph_objs as go
+# import plotly.subplots as sp
+# import matplotlib.dates as mdates
+# from company_ticker_map import COMPANY_TO_TICKER_MAP  # Import the map
+# import pandas as pd
+# from yahoo_fin import stock_info as si
+# # from requests_html import HTMLSession
+# import requests
+# from bs4 import BeautifulSoup
+# from yahooquery import Screener
+# import time
+
+
+# load_dotenv()
+
+
+
+# def get_ticker_symbol(company_name):
+#     try:
+#         # First, check if the company name is in the known mapping
+#         if company_name.lower() in COMPANY_TO_TICKER_MAP:
+#             return COMPANY_TO_TICKER_MAP[company_name.lower()]
+        
+#         # Use the download function to check if the company exists by downloading data
+#         company_search = yf.Ticker(company_name)
+#         if 'symbol' in company_search.info:
+#             ticker_symbol = company_search.info['symbol']
+#             return ticker_symbol
+#         else:
+#             raise ValueError(f"No ticker symbol found for {company_name}.")
+#     except KeyError:
+#         raise ValueError(f"Error retrieving ticker symbol for {company_name}: Ticker data not available.")
+#     except Exception as e:
+#         raise ValueError(f"Error retrieving ticker symbol for {company_name}: {str(e)}")
+
+# class FinancialCrew:
+#     def __init__(self, company):
+#         self.company = company
+
+
+#     def run(self):
+#         agents = StockAnalysisAgents()
+#         tasks = StockAnalysisTasks()
+
+#         research_analyst_agent = agents.research_analyst()
+#         financial_analyst_agent = agents.financial_analyst()
+#         investment_advisor_agent = agents.investment_advisor()
+
+#         research_task = tasks.research(research_analyst_agent, self.company)
+#         financial_task = tasks.financial_analysis(financial_analyst_agent)
+#         filings_task = tasks.filings_analysis(financial_analyst_agent)
+#         recommend_task = tasks.recommend(investment_advisor_agent)
+
+#         crew = Crew(
+#             agents=[
+#                 research_analyst_agent,
+#                 financial_analyst_agent,
+#                 investment_advisor_agent
+#             ],
+#             tasks=[
+#                 research_task,
+#                 financial_task,
+#                 filings_task,
+#                 recommend_task
+#             ],
+#             verbose=False  # Set verbose to False to suppress terminal output
+#         )
+
+#         result = crew.kickoff()
+#         final_summary = result.get("final_summary", "Summary not found")  # type: ignore # Modify the key as per your actual structure
+#         return final_summary
+
+# class FinancialAnalysisApp(ctk.CTk):
+#     def __init__(self, master):
+#         super().__init__()
+#         self.master = master
+
+
+#         self.top_button = ctk.CTkButton(master, text="Top 10 stocks to Buy", command=self.show_top_10_stocks, font=("Arial", 14, "bold"))
+#         self.top_button.pack(pady=10)
+
+#         # self.worst_button = ctk.CTkButton(master, text="Show Worst 10 Stocks", command=self.show_worst_10_stocks)
+#         # self.worst_button.pack(pady=10)
+
+#         self.title("Financial Analysis Terminal")
+#         self.geometry("530x550")
+#         self.resizable(False, False)  # Prevent window resizing
+
+#         # Set up main frame
+#         self.main_frame = ctk.CTkFrame(self)
+#         self.main_frame.pack(padx=10, pady=10, fill="both", expand=True)
+
+#         # Configure grid layout
+#         self.main_frame.columnconfigure(0, weight=1)
+#         self.main_frame.columnconfigure(1, weight=0)
+
+#         # Company Name Label and Entry
+#         self.company_label = ctk.CTkLabel(self.main_frame, text="Company Name:", font=("Arial", 18, "bold"))
+#         self.company_label.grid(row=0, column=0, sticky="w")
+
+#         self.company_entry = ctk.CTkEntry(self.main_frame, width=320)
+#         self.company_entry.grid(row=0, column=1, sticky="e", padx=(10, 0))
+
+#         # Analyze Button
+#         self.analyze_button = ctk.CTkButton(self.main_frame, text="Analyze", command=self.start_analysis, width=100, font=("Arial", 14, "bold"))
+#         self.analyze_button.grid(row=1, column=0, columnspan=2, pady=(15, 0))
+
+#         # Analysis Result Textbox
+#         self.analysis_text = ctk.CTkTextbox(self.main_frame, height=15, width=400)
+#         self.analysis_text.grid(row=2, column=0, columnspan=2, pady=(15, 0))
+
+#         # Financial Metrics Label and Textbox
+#         self.graph_input_label = ctk.CTkLabel(self.main_frame, text="Financial Metrics:", font=("Arial", 18, "bold"))
+#         self.graph_input_label.grid(row=3, column=0, sticky="w", pady=(15, 0))
+
+#         # Instruction Label for Sentiment Line Chart
+#         self.sentiment_instruction_label = ctk.CTkLabel(self.main_frame, text="Choose Sentiment Line Chart to see the final answer.", font=("Arial", 12, "italic"))
+#         self.sentiment_instruction_label.grid(row=4, column=0, columnspan=2, sticky="w", pady=(5, 0))
+
+#         # Financial Metrics Textbox
+#         self.graph_input_text = ctk.CTkTextbox(self.main_frame, height=100, width=400)
+#         self.graph_input_text.grid(row=5, column=0, columnspan=2, pady=(10, 0))
+
+#         # Graph Type Dropdown
+#         self.graph_type_var = ctk.StringVar()
+#         self.graph_type_var.set("Bar Chart")  # Default option
+#         self.graph_type_menu = ctk.CTkOptionMenu(self.main_frame, variable=self.graph_type_var, values=["Bar Chart", "Pie Chart", "Histogram", "Sentiment Line Chart"], font=("Arial", 14, "bold"))
+#         self.graph_type_menu.grid(row=6, column=0, columnspan=2, pady=(10, 0))
+
+#         # Generate Graph Button
+#         self.graph_button = ctk.CTkButton(self.main_frame, text="Generate Graph", command=self.generate_graph, width=120, font=("Arial", 14, "bold"))
+#         self.graph_button.grid(row=7, column=0, columnspan=2, pady=(10, 0))
+
+#         # Real-Time Stock Price Button
+#         self.stock_price_button = ctk.CTkButton(self.main_frame, text="Show Real-Time Stock Prices", command=self.show_realtime_prices, width=200, font=("Arial", 14, "bold"))
+#         self.stock_price_button.grid(row=8, column=0, columnspan=2, pady=(25, 0))
+
+#         # Instruction Label for closing the app using Task Manager
+#         self.close_instruction_label = ctk.CTkLabel(
+#             self.main_frame, 
+#             text="*To close the application, press Ctrl + Shift + Esc, open the Task Manager, right-click on the Python GUI, and select 'End Task'.*", 
+#             font=("Arial", 12, "italic"),
+#             wraplength=300,
+#             anchor="center"  # This centers the text within the label
+#         )
+#         self.close_instruction_label.grid(row=9, column=0, columnspan=2, sticky="ew", pady=(5, 0))
+
+#         # trying to fetch real time top 10 and worst 10 stocks
+#         # Add buttons to show top and worst stocks
+#         # self.top_button = ctk.CTkButton(master, text="Show Top 10 Stocks", command=self.show_top_10_stocks)
+#         # self.top_button.pack(pady=10)
+
+#         # self.worst_button = ctk.CTkButton(master, text="Show Worst 10 Stocks", command=self.show_worst_10_stocks)
+#         # self.worst_button.pack(pady=10)
+
+
+
+
+#         # Canvas for displaying the graph
+#         self.graph_canvas = None
+#         self.plot_thread = None
+#         self.fetcher = RealTimeStockPriceFetcher(self)
+
+#     def start_analysis(self):
+#         company_name = self.company_entry.get().strip()
+#         if company_name:
+#             try:
+#                 # Get the ticker symbol using the new function
+#                 ticker_symbol = get_ticker_symbol(company_name)
+#                 self.analysis_text.delete("1.0", ctk.END)
+#                 self.analysis_text.insert(ctk.END, f"Analyzing {company_name} ({ticker_symbol})...\n")
+#                 threading.Thread(target=self.run_analysis, args=(ticker_symbol,)).start()
+#             except ValueError as e:
+#                 self.analysis_text.delete("1.0", ctk.END)
+#                 self.analysis_text.insert(ctk.END, str(e))
+#         else:
+#             self.analysis_text.delete("1.0", ctk.END)
+#             self.analysis_text.insert(ctk.END, "Please enter a company name.")
+
+#     def run_analysis(self, company_name):
+#         summary = FinancialCrew(company_name).run()
+#         self.analysis_text.insert(ctk.END, f"{summary}\n")
+
+#     def generate_graph(self):
+#         user_input = self.graph_input_text.get("1.0", ctk.END).strip()
+#         graph_type = self.graph_type_var.get()  # Get selected graph type
+#         if user_input:
+#             # Call the parse_input function and capture any recommendation output
+#             recommendation = parse_input(user_input, graph_type)  # Assume parse_input returns recommendation text
+#             self.display_graph(recommendation)
+#         else:
+#             messagebox.showwarning("Input Error", "Please enter financial metrics.")
+
+#     def display_graph(self, recommendation=None):
+#         if self.graph_canvas:
+#             self.graph_canvas.get_tk_widget().destroy()  # Remove previous canvas if it exists
+
+#         fig = plt.gcf()  # Get the current figure from matplotlib
+
+#         # Create a new window for the graph
+#         graph_window = ctk.CTkToplevel(self)
+#         graph_window.title("Financial Graph")
+#         graph_window.resizable(False, False)
+
+#         self.graph_canvas = FigureCanvasTkAgg(fig, master=graph_window)
+#         self.graph_canvas.draw()
+#         self.graph_canvas.get_tk_widget().pack()
+
+#         if recommendation:
+#             messagebox.showinfo("Recommendation", recommendation)  # Display the recommendation as a messagebox
+
+#     def show_realtime_prices(self):
+#         company_name = self.company_entry.get().strip()
+#         if not company_name:
+#             messagebox.showwarning("Input Error", "Please enter a company name.")
+#             return
+
+#         try:
+#             # Get the ticker symbol using the new function
+#             ticker_symbol = get_ticker_symbol(company_name)
+#         except ValueError as e:
+#             messagebox.showwarning("Error", str(e))
+#             return
+
+#         if self.plot_thread and self.plot_thread.is_alive():
+#             messagebox.showwarning("Error", "Real-time price fetching is already running.")
+#             return
+
+#         self.plot_thread = threading.Thread(target=self.fetcher.fetch_realtime_prices, args=(ticker_symbol,))
+#         self.plot_thread.start()
+
+#     def stop_realtime_prices(self):
+#         if self.plot_thread and self.plot_thread.is_alive():
+#             self.fetcher.stop()
+#             self.plot_thread.join()
+
+#     def on_closing(self):
+#         self.stop_realtime_prices()
+#         self.destroy()
+
+#     #functions for fetching top 10 and worst 10 stocks real time
+#     def show_top_10_stocks(self):
+#         threading.Thread(target=self.fetch_and_display_stocks, args=("top",)).start()  # Pass "top" as the first argument
+    
+#     def show_worst_10_stocks(self):
+#         threading.Thread(target=self.fetch_and_display_stocks, args=("worst",)).start()  # Pass "worst" as the first argument
+
+#     # def fetch_and_display_stocks(self, stock_type, stock_data=None):
+#     #     # Check stock_type instead of 'type'
+#     #     if stock_type == "top":
+#     #         stocks = self.fetch_top_10_stocks()
+#     #     else:
+#     #         stocks = self.fetch_worst_10_stocks()
+
+#     #     # Create a new window for the stock list
+#     #     self.display_stock_list_in_new_window(stock_type, stocks)
+
+#     def fetch_and_display_stocks(self, stock_type, stock_data=None):
+#         # Check stock_type instead of 'type'
+#         if stock_type == "top":
+#             stocks = self.fetch_top_10_most_active_stocks()
+#         else:
+#             stocks = self.fetch_worst_10_stocks()
+
+#         # Create a new window for the stock list
+#         self.display_stock_list_in_new_window(stock_type, stocks)
+
+
+#     def display_stock_list_in_new_window(self, stock_type, stocks):
+#         # Create a new Toplevel window (new GUI)
+#         new_window = ctk.CTkToplevel(self.master)
+#         new_window.title(f"{stock_type.capitalize()} 10 Stocks")
+
+#         # Add a label to the new window
+#         stock_label = ctk.CTkLabel(new_window, text=f"{stock_type.capitalize()} 10 Stocks", font=("Helvetica", 16))
+#         stock_label.pack(pady=10)
+
+#         # Create a text box to display the stocks
+#         stock_text = ctk.CTkTextbox(new_window, width=400, height=300)
+#         stock_text.pack(padx=20, pady=20)
+
+#         # Insert the stock list into the text box
+#         stock_list = "\n".join([f"{i+1}. {stock['name']} | P/E: {stock['pe_ratio']} | Revenue: {stock['revenue']}" for i, stock in enumerate(stocks)])
+#         stock_text.insert(ctk.END, stock_list)
+
+#     # def fetch_top_10_stocks(self):
+#     #     # Fetch top 10 most active stock tickers dynamically from Yahoo Finance
+#     #     top_10_tickers = self.get_most_active_stocks()
+
+#     #     stock_data = []
+#     #     for ticker in top_10_tickers:
+#     #         stock_info = self.get_stock_info(ticker)
+#     #         stock_data.append(stock_info)
+
+#     #     # Sort the stocks by P/E ratio or any other criteria (ascending P/E in this case)
+#     #     sorted_stocks = sorted(stock_data, key=lambda x: x["pe_ratio"] if x["pe_ratio"] != "N/A" else float('inf'))
+
+#     #     # Return the top 10 stocks
+#     #     return sorted_stocks[:10]
+    
+
+#     # def get_most_active_stocks(self):
+#     #     url = "https://finance.yahoo.com/most-active?offset=0&count=10"
+#     #     response = requests.get(url)
+        
+#     #     if response.status_code != 200:
+#     #         raise Exception("Failed to fetch data from Yahoo Finance.")
+        
+#     #     # Use BeautifulSoup to parse the HTML response
+#     #     soup = BeautifulSoup(response.text, 'html.parser')
+        
+#     #     # Find the table rows containing the stock data
+#     #     stock_rows = soup.find_all('tr', attrs={'class': 'simpTblRow'})
+        
+#     #     most_active_tickers = []
+        
+#     #     for row in stock_rows:
+#     #         # Extract the stock ticker from the first column
+#     #         ticker = row.find('td', attrs={'aria-label': 'Symbol'}).text
+#     #         most_active_tickers.append(ticker)
+        
+#     #     return most_active_tickers[:10]  # Return the top 10 tickers
+
+#     # def get_stock_info(self, ticker):
+#     #     stock = yf.Ticker(ticker)
+#     #     info = stock.info
+
+#     #     # Fetch P/E ratio and revenue
+#     #     pe_ratio = info.get("forwardPE") or info.get("trailingPE", "N/A")
+#     #     revenue = info.get("totalRevenue", "N/A")
+
+#     #     stock_info = {
+#     #         "name": info.get("shortName", ticker),
+#     #         "pe_ratio": pe_ratio,
+#     #         "revenue": f"{revenue / 1e9:.2f}B" if revenue != "N/A" else "N/A"
+#     #     }
+
+#     #     return stock_info
+
+#     def fetch_top_10_most_active_stocks(self):
+#         try:
+#             # Use Yahoo Finance screener to get the most active stocks
+#             s = Screener()
+#             # Fetch top 10 most active stocks
+#             screen = s.get_screeners('most_actives', count=10)
+#             top_10_stocks = screen['most_actives']['quotes'] # type: ignore
+            
+#             top_10_tickers = [stock['symbol'] for stock in top_10_stocks] # type: ignore
+
+#             print("Top 10 most active stock tickers:", top_10_tickers)
+
+#             # Fetch real-time data for these tickers
+#             print("Fetching real-time data for top 10 most active stocks...")
+#             stocks_data = {}
+#             for ticker in top_10_tickers:
+#                 # stock = yf.Ticker(ticker)
+#                 # stock_info = stock.history(period="1d")
+#                 # stocks_data[ticker] = stock_info
+#                 try:
+#                     stock = yf.Ticker(ticker)
+#                     stock_info = stock.history(period="1d")
+#                     stocks_data[ticker] = stock_info
+#                     time.sleep(1)  # Add a delay to avoid hitting rate limits
+#                 except Exception as e:
+#                     print(f"Error fetching data for {ticker}: {e}")
+
+#             # Display the data
+#             for ticker, stock_info in stocks_data.items():
+#                 print(f"--- {ticker} ---")
+#                 print(stock_info)
+#                 print("\n")
+
+#         except Exception as e:
+#             print(f"Error fetching top 10 stocks data: {e}")
+
+
+#     def fetch_worst_10_stocks(self):
+#         # Example logic to fetch worst 10 stocks - you can replace it with an actual API or logic.
+#         worst_10 = [
+#             {"name": "ABC Corp", "pe_ratio": 4.20, "revenue": "2.3B"},
+#             {"name": "XYZ Inc", "pe_ratio": 5.00, "revenue": "1.5B"},
+#             # ... Add other stocks
+#         ]
+#         return worst_10
+
+# class RealTimeStockPriceFetcher:
+#     def __init__(self, app):
+#         self.app = app  # Pass the app instance
+#         self.running = False
+
+#     def fetch_realtime_prices(self, company_name):
+#         ticker = yf.Ticker(company_name)
+#         self.running = True
+#         self._schedule_update(ticker)
+
+
+
+#     def _schedule_update(self, ticker):
+#         if not self.running:
+#             return  # If stopped, don't continue
+
+#         data = ticker.history(period='7d', interval='1m')
+
+#         if data.empty:
+#             print(f"No price data found for {ticker.ticker}, please check the ticker symbol.")
+#             return
+
+#         prices = data['Close']
+#         self.app.after(1000, lambda: self._update_plot(prices.index, prices.values, ticker.ticker))
+#         self.app.after(60000, lambda: self._schedule_update(ticker))  # Schedule the next update in 60 seconds
+
+
+
+
+#     # def _schedule_update(self, ticker):
+#     #     if not self.running:
+#     #         return  # If stopped, don't continue
+
+#     #     # Fetch data for the last 7 days with 1-minute intervals
+#     #     data = ticker.history(period='7d', interval='1m')
+
+#     #     # Debug Output: Print or log the fetched data
+#     #     if data.empty:
+#     #         print(f"No price data found for {ticker.ticker}, please check the ticker symbol.")
+#     #         return
+#     #     else:
+#     #         # Print the entire DataFrame for debugging
+#     #         print(f"Fetched data for {ticker.ticker}:")
+#     #         print(data)
+
+#     #         # Print the date range (index of the DataFrame) for further verification
+#     #         print("Data covers the following date range:")
+#     #         print(data.index)
+
+#     #     # Get closing prices for plotting
+#     #     prices = data['Close']
+
+#     #     # Update plot and schedule the next update
+#     #     self.app.after(1000, lambda: self._update_plot(prices.index, prices.values, ticker.ticker))
+#     #     self.app.after(60000, lambda: self._schedule_update(ticker))  # Schedule the next update in 60 seconds
+
+
+#     def _update_plot(self, times, prices, company_name):
+#         plt.ion()  # Turn on interactive mode
+#         fig, ax = plt.subplots()
+#         fig.patch.set_facecolor('#2c2f33')  # Set figure background color
+
+#         ax.clear()
+
+#         ax.plot(times, prices, color='#1fb453', linewidth=0.5)
+#         ax.set_facecolor('#1e1e1e')
+#         ax.set_title(f"Real-Time Price for {company_name}", fontsize=14, color='white')
+#         ax.set_xlabel("Time", fontsize=12, color='white')
+#         ax.set_ylabel("Price (USD)", fontsize=12, color='white')
+#         ax.grid(True, linestyle='--', alpha=0.6)
+#         plt.setp(ax.get_xticklabels(), rotation=45, ha='right', color='white')
+#         plt.setp(ax.get_yticklabels(), color='white')
+
+#         # Adjust axis margins to remove white space
+#         plt.subplots_adjust(left=0, bottom=0.2)
+#         plt.tight_layout()
+
+#         canvas = FigureCanvasTkAgg(fig, master=self.app)
+#         canvas.get_tk_widget().pack(side='top', fill='both', expand=True)
+
+#         plt.draw()
+#         plt.pause(60)  # Pause for 60 seconds
+
+#     def stop(self):
+#         self.running = False
+
+# if __name__ == "__main__":
+#     # app = FinancialAnalysisApp()
+#     app = FinancialAnalysisApp(master=None)
+#     app.protocol("WM_DELETE_WINDOW", app.on_closing)  # Handle window closing event
+#     app.mainloop()
