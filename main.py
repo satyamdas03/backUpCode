@@ -21,6 +21,7 @@ import requests
 from bs4 import BeautifulSoup
 from yahooquery import Screener
 import time
+from test import fetch_top_10_most_active_stocks
 
 
 load_dotenv()
@@ -157,16 +158,6 @@ class FinancialAnalysisApp(ctk.CTk):
         )
         self.close_instruction_label.grid(row=9, column=0, columnspan=2, sticky="ew", pady=(5, 0))
 
-        # trying to fetch real time top 10 and worst 10 stocks
-        # Add buttons to show top and worst stocks
-        # self.top_button = ctk.CTkButton(master, text="Show Top 10 Stocks", command=self.show_top_10_stocks)
-        # self.top_button.pack(pady=10)
-
-        # self.worst_button = ctk.CTkButton(master, text="Show Worst 10 Stocks", command=self.show_worst_10_stocks)
-        # self.worst_button.pack(pady=10)
-
-
-
 
         # Canvas for displaying the graph
         self.graph_canvas = None
@@ -251,8 +242,25 @@ class FinancialAnalysisApp(ctk.CTk):
         self.destroy()
 
     #functions for fetching top 10 and worst 10 stocks real time
+    # def show_top_10_stocks(self):
+    #     threading.Thread(target=self.fetch_and_display_stocks, args=("top",)).start()  # Pass "top" as the first argument
+
     def show_top_10_stocks(self):
-        threading.Thread(target=self.fetch_and_display_stocks, args=("top",)).start()  # Pass "top" as the first argument
+        try:
+            self.analysis_text.delete("1.0", ctk.END)  # Clear previous content
+            self.analysis_text.insert(ctk.END, "Fetching top 10 most active stocks...\n")
+            
+            # Fetch the top 10 most active stocks
+            top_10_stocks = fetch_top_10_most_active_stocks()  # This returns the data
+            if top_10_stocks:
+                self.analysis_text.insert(ctk.END, "Top 10 Most Active Stocks:\n")
+                for ticker, stock_info in top_10_stocks.items():
+                    self.analysis_text.insert(ctk.END, f"{ticker}: {stock_info}\n")
+            else:
+                self.analysis_text.insert(ctk.END, "No stock data found.\n")
+        
+        except Exception as e:
+            self.analysis_text.insert(ctk.END, f"Error fetching stock data: {e}\n")
     
     def show_worst_10_stocks(self):
         threading.Thread(target=self.fetch_and_display_stocks, args=("worst",)).start()  # Pass "worst" as the first argument
@@ -375,36 +383,6 @@ class RealTimeStockPriceFetcher:
         prices = data['Close']
         self.app.after(1000, lambda: self._update_plot(prices.index, prices.values, ticker.ticker))
         self.app.after(60000, lambda: self._schedule_update(ticker))  # Schedule the next update in 60 seconds
-
-
-
-
-    # def _schedule_update(self, ticker):
-    #     if not self.running:
-    #         return  # If stopped, don't continue
-
-    #     # Fetch data for the last 7 days with 1-minute intervals
-    #     data = ticker.history(period='7d', interval='1m')
-
-    #     # Debug Output: Print or log the fetched data
-    #     if data.empty:
-    #         print(f"No price data found for {ticker.ticker}, please check the ticker symbol.")
-    #         return
-    #     else:
-    #         # Print the entire DataFrame for debugging
-    #         print(f"Fetched data for {ticker.ticker}:")
-    #         print(data)
-
-    #         # Print the date range (index of the DataFrame) for further verification
-    #         print("Data covers the following date range:")
-    #         print(data.index)
-
-    #     # Get closing prices for plotting
-    #     prices = data['Close']
-
-    #     # Update plot and schedule the next update
-    #     self.app.after(1000, lambda: self._update_plot(prices.index, prices.values, ticker.ticker))
-    #     self.app.after(60000, lambda: self._schedule_update(ticker))  # Schedule the next update in 60 seconds
 
 
     def _update_plot(self, times, prices, company_name):
