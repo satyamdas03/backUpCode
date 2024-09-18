@@ -27,7 +27,7 @@ class SearchTools():
             f"Snippet: {result['snippet']}", "\n-----------------"
         ]))
       except KeyError:
-        next
+        next # type: ignore
 
     return '\n'.join(string)
 
@@ -52,6 +52,6 @@ class SearchTools():
             f"Snippet: {result['snippet']}", "\n-----------------"
         ]))
       except KeyError:
-        next
+        next # type: ignore
 
     return '\n'.join(string)

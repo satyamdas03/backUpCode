@@ -21,7 +21,7 @@ class SECTools():
     question you have from it.
 		For example, `AAPL|what was last quarter's revenue`.
     """
-    stock, ask = data.split("|")
+    stock, ask = data.split("|") # type: ignore
     queryApi = QueryApi(api_key=os.environ['SEC_API_API_KEY'])
     query = {
       "query": {
@@ -34,7 +34,7 @@ class SECTools():
       "sort": [{ "filedAt": { "order": "desc" }}]
     }
 
-    fillings = queryApi.get_filings(query)['filings']
+    fillings = queryApi.get_filings(query)['filings'] # type: ignore
     if len(fillings) == 0:
       return "Sorry, I couldn't find any filling for this stock, check if the ticker is correct."
     link = fillings[0]['linkToFilingDetails']
@@ -51,7 +51,7 @@ class SECTools():
     question you have from it.
     For example, `AAPL|what was last year's revenue`.
     """
-    stock, ask = data.split("|")
+    stock, ask = data.split("|") # type: ignore
     queryApi = QueryApi(api_key=os.environ['SEC_API_API_KEY'])
     query = {
       "query": {
@@ -64,7 +64,7 @@ class SECTools():
       "sort": [{ "filedAt": { "order": "desc" }}]
     }
 
-    fillings = queryApi.get_filings(query)['filings']
+    fillings = queryApi.get_filings(query)['filings'] # type: ignore
     if len(fillings) == 0:
       return "Sorry, I couldn't find any filling for this stock, check if the ticker is correct."
     link = fillings[0]['linkToFilingDetails']
@@ -90,7 +90,7 @@ class SECTools():
     answers = "\n\n".join([a.page_content for a in answers])
     return answers
 
-  def __download_form_html(url):
+  def __download_form_html(url): # type: ignore
     headers = {
       'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
       'Accept-Encoding': 'gzip, deflate, br',
@@ -108,5 +108,5 @@ class SECTools():
       'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
     }
 
-    response = requests.get(url, headers=headers)
+    response = requests.get(url, headers=headers) # type: ignore
     return response.text
