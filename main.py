@@ -264,8 +264,8 @@ class FinancialAnalysisApp(ctk.CTk):
     # new feature to compare stocks of the companies
     def compare_stocks(self):
         # Open a dialog to enter company names
-        input_dialog = ctk.CTkInputDialog(self, "Compare Stocks", "Enter the company names separated by commas:")
-        company_names = input_dialog.get_input().strip()
+        input_dialog = ctk.CTkInputDialog(self, "Compare Stocks", "Enter the company names separated by commas:") # type: ignore
+        company_names = input_dialog.get_input().strip() # type: ignore
         if company_names:
             self.analyze_stocks(company_names.split(','))
     
