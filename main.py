@@ -92,6 +92,11 @@ class FinancialAnalysisApp(ctk.CTk):
         self.top_button = ctk.CTkButton(master, text="Top 10 stocks to Buy", command=self.show_top_10_stocks, font=("Arial", 14, "bold"))
         self.top_button.pack(pady=10)
 
+
+        # new feature for comparing stocks of the companies
+        self.compare_button = ctk.CTkButton(master, text="Compare Stocks", command=self.compare_stocks, font=("Arial", 14, "bold"))
+        self.compare_button.pack(pady=10)
+
         self.title("Financial Analysis Terminal")
         self.geometry("530x550")
         self.resizable(False, False)  # Prevent window resizing
@@ -254,6 +259,36 @@ class FinancialAnalysisApp(ctk.CTk):
         # Insert the stock data into the textbox
         text_widget.insert(ctk.END, stock_data)
         text_widget.configure(state='disabled')  # Disable editing of the textbox
+
+    
+    # new feature to compare stocks of the companies
+    def compare_stocks(self):
+        # Open a dialog to enter company names
+        input_dialog = ctk.CTkInputDialog(self, "Compare Stocks", "Enter the company names separated by commas:")
+        company_names = input_dialog.get_input().strip()
+        if company_names:
+            self.analyze_stocks(company_names.split(','))
+    
+    def analyze_stocks(self, company_names):
+        results = []
+        for company in company_names:
+            company = company.strip()
+            try:
+                ticker_symbol = get_ticker_symbol(company)
+                pe_ratio = self.get_pe_ratio(ticker_symbol)
+                results.append(f"{company} ({ticker_symbol}): P/E Ratio = {pe_ratio}")
+            except ValueError as e:
+                results.append(f"{company}: {str(e)}")
+
+        # Display results
+        result_str = "\n".join(results)
+        messagebox.showinfo("P/E Ratio Comparison", result_str)
+
+    def get_pe_ratio(self, ticker_symbol):
+        stock = yf.Ticker(ticker_symbol)
+        pe_ratio = stock.info.get('trailingPE', 'N/A')
+        return pe_ratio
+
 
 
 
