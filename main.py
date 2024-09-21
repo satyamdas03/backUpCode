@@ -272,21 +272,6 @@ class FinancialAnalysisApp(ctk.CTk):
             self.analyze_stocks(company_names.split(','))
 
 
-    # def analyze_stocks(self, company_names):
-    #     results = []
-    #     for company in company_names:
-    #         company = company.strip()
-    #         try:
-    #             ticker_symbol = get_ticker_symbol(company)
-    #             metrics = self.get_financial_metrics(ticker_symbol)
-    #             results.append(f"{company} ({ticker_symbol}): {metrics}")
-    #         except ValueError as e:
-    #             results.append(f"{company}: {str(e)}")
-
-    #     # Display results
-    #     result_str = "\n".join(results)
-    #     messagebox.showinfo("Financial Metrics Comparison", result_str)
-
     def analyze_stocks(self, company_names):
         results = []
         best_company = None
