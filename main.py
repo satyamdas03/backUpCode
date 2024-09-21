@@ -264,26 +264,42 @@ class FinancialAnalysisApp(ctk.CTk):
     # new feature to compare stocks of the companies
     def compare_stocks(self):
         # Open a dialog to enter company names
-        input_dialog = ctk.CTkInputDialog(title="Compare Stocks", text="Enter the company names separated by commas:") # type: ignore
-        company_names = input_dialog.get_input().strip() # type: ignore
+        input_dialog = ctk.CTkInputDialog(title="Compare Stocks", text="Enter the company names separated by commas:")  # type: ignore
+        company_names = input_dialog.get_input().strip()  # type: ignore
         if company_names:
             self.analyze_stocks(company_names.split(','))
 
-    
     def analyze_stocks(self, company_names):
         results = []
         for company in company_names:
             company = company.strip()
             try:
                 ticker_symbol = get_ticker_symbol(company)
-                pe_ratio = self.get_pe_ratio(ticker_symbol)
-                results.append(f"{company} ({ticker_symbol}): P/E Ratio = {pe_ratio}")
+                metrics = self.get_financial_metrics(ticker_symbol)
+                results.append(f"{company} ({ticker_symbol}): {metrics}")
             except ValueError as e:
                 results.append(f"{company}: {str(e)}")
 
         # Display results
         result_str = "\n".join(results)
-        messagebox.showinfo("P/E Ratio Comparison", result_str)
+        messagebox.showinfo("Financial Metrics Comparison", result_str)
+
+    
+    def get_financial_metrics(self, ticker_symbol):
+        stock = yf.Ticker(ticker_symbol)
+
+        # Fetching financial metrics
+        pe_ratio = stock.info.get('trailingPE', 'N/A')
+        pb_ratio = stock.info.get('priceToBook', 'N/A')
+        de_ratio = stock.info.get('debtToEquity', 'N/A')
+        fcf = stock.info.get('freeCashflow', 'N/A')
+        peg_ratio = stock.info.get('pegRatio', 'N/A')
+
+        metrics = (f"P/E Ratio: {pe_ratio}, P/B Ratio: {pb_ratio}, "
+                   f"Debt-to-Equity Ratio: {de_ratio}, Free Cash Flow: {fcf}, "
+                   f"PEG Ratio: {peg_ratio}")
+
+        return metrics
 
     def get_pe_ratio(self, ticker_symbol):
         stock = yf.Ticker(ticker_symbol)
