@@ -22,6 +22,8 @@ from bs4 import BeautifulSoup
 from yahooquery import Screener
 import time
 from test import fetch_top_10_most_active_stocks
+from tkinter import ttk  # Import ttk for table support
+
 
 
 load_dotenv()
@@ -269,43 +271,87 @@ class FinancialAnalysisApp(ctk.CTk):
         if company_names:
             self.analyze_stocks(company_names.split(','))
 
+
+    # def analyze_stocks(self, company_names):
+    #     results = []
+    #     for company in company_names:
+    #         company = company.strip()
+    #         try:
+    #             ticker_symbol = get_ticker_symbol(company)
+    #             metrics = self.get_financial_metrics(ticker_symbol)
+    #             results.append(f"{company} ({ticker_symbol}): {metrics}")
+    #         except ValueError as e:
+    #             results.append(f"{company}: {str(e)}")
+
+    #     # Display results
+    #     result_str = "\n".join(results)
+    #     messagebox.showinfo("Financial Metrics Comparison", result_str)
+
     def analyze_stocks(self, company_names):
         results = []
+        best_company = None
+        best_score = float('-inf')  # Start with the lowest possible score
+
         for company in company_names:
             company = company.strip()
             try:
                 ticker_symbol = get_ticker_symbol(company)
                 metrics = self.get_financial_metrics(ticker_symbol)
-                results.append(f"{company} ({ticker_symbol}): {metrics}")
+                
+                # Parse metrics for scoring
+                pe_ratio = metrics['P/E Ratio'] # type: ignore
+                pb_ratio = metrics['P/B Ratio'] # type: ignore
+                de_ratio = metrics['Debt/Equity'] # type: ignore
+                fcf = metrics['Free Cash Flow'] # type: ignore
+                peg_ratio = metrics['PEG Ratio'] # type: ignore
+
+                # Calculate score based on metrics
+                score = self.calculate_score(pe_ratio, pb_ratio, de_ratio, fcf, peg_ratio)
+
+                results.append(f"{company} ({ticker_symbol}): {metrics} | Score: {score}")
+
+                # Update best company based on score
+                if score > best_score:
+                    best_score = score
+                    best_company = f"{company} ({ticker_symbol})"
+            
             except ValueError as e:
                 results.append(f"{company}: {str(e)}")
 
         # Display results
         result_str = "\n".join(results)
+        result_str += f"\n\n**Best Company: {best_company} with Score: {best_score}**"
         messagebox.showinfo("Financial Metrics Comparison", result_str)
 
-    
+
+    def calculate_score(self, pe_ratio, pb_ratio, de_ratio, fcf, peg_ratio):
+        # Define your scoring logic here
+        score = 0
+
+        # Assuming lower P/E and P/B are better
+        score += (20 / (pe_ratio + 1))  # Normalized score for P/E
+        score += (20 / (pb_ratio + 1))  # Normalized score for P/B
+        score -= (20 * (de_ratio / 100))  # Higher Debt/Equity reduces score
+        score += (fcf if fcf != 'N/A' else 0)  # Add free cash flow if available
+        score += (peg_ratio if peg_ratio != 'N/A' else 0)  # Add PEG Ratio if available
+
+        return score
+
+
+
     def get_financial_metrics(self, ticker_symbol):
         stock = yf.Ticker(ticker_symbol)
 
         # Fetching financial metrics
-        pe_ratio = stock.info.get('trailingPE', 'N/A')
-        pb_ratio = stock.info.get('priceToBook', 'N/A')
-        de_ratio = stock.info.get('debtToEquity', 'N/A')
-        fcf = stock.info.get('freeCashflow', 'N/A')
-        peg_ratio = stock.info.get('pegRatio', 'N/A')
+        metrics = {
+            'P/E Ratio': stock.info.get('trailingPE', 'N/A'),
+            'P/B Ratio': stock.info.get('priceToBook', 'N/A'),
+            'Debt/Equity': stock.info.get('debtToEquity', 'N/A'),
+            'Free Cash Flow': stock.info.get('freeCashflow', 'N/A'),
+            'PEG Ratio': stock.info.get('pegRatio', 'N/A')
+        }
 
-        metrics = (f"P/E Ratio: {pe_ratio}, P/B Ratio: {pb_ratio}, "
-                   f"Debt-to-Equity Ratio: {de_ratio}, Free Cash Flow: {fcf}, "
-                   f"PEG Ratio: {peg_ratio}")
-
-        return metrics
-
-    def get_pe_ratio(self, ticker_symbol):
-        stock = yf.Ticker(ticker_symbol)
-        pe_ratio = stock.info.get('trailingPE', 'N/A')
-        return pe_ratio
-
+        return metrics  # Return as a dictionary
 
 
 
