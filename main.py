@@ -100,7 +100,7 @@ class FinancialAnalysisApp(ctk.CTk):
         self.compare_button.pack(pady=10)
 
         self.title("Financial Analysis Terminal")
-        self.geometry("530x586")
+        self.geometry("530x598")
         self.resizable(False, False)  # Prevent window resizing
 
         # Set up main frame
