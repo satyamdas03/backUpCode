@@ -1,3 +1,7 @@
+# SWITCH TO THE BRANCH "BUGFIX" TO SEE THE UPDATED README FILE
+
+
+
 # Stock Analysis Project
 
 ## Overview
